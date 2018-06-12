@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.Models"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.Common", "Blockche.Blockchain.Common\Blockche.Blockchain.Common.csproj", "{95424079-9415-4BA2-AC7C-EB28E0D80D6E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.Web.Tests", "Blockche.Blockchain.Web.Tests\Blockche.Blockchain.Web.Tests.csproj", "{954C2B51-C46A-4FAD-86C9-12F282370E7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +31,16 @@ Global
 		{95424079-9415-4BA2-AC7C-EB28E0D80D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95424079-9415-4BA2-AC7C-EB28E0D80D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95424079-9415-4BA2-AC7C-EB28E0D80D6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{954C2B51-C46A-4FAD-86C9-12F282370E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{954C2B51-C46A-4FAD-86C9-12F282370E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{954C2B51-C46A-4FAD-86C9-12F282370E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{954C2B51-C46A-4FAD-86C9-12F282370E7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{954C2B51-C46A-4FAD-86C9-12F282370E7A} = {DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46A3250C-B250-49BB-BB02-F57ACBF6D7A2}
