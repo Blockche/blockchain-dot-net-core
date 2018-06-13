@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Miner.ConsoleApp", "Blockche.Miner.ConsoleApp\Blockche.Miner.ConsoleApp.csproj", "{6568D5F8-77B3-407E-932C-EA0E1C609C6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blockche.Miner.ConsoleApp", "Blockche.Miner.ConsoleApp\Blockche.Miner.ConsoleApp.csproj", "{6568D5F8-77B3-407E-932C-EA0E1C609C6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Miner.ConsoleApp.Tests", "Blockche.Miner.ConsoleApp.Tests\Blockche.Miner.ConsoleApp.Tests.csproj", "{7EE0D788-60B0-4B01-BD35-1905EE50EFF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blockche.Miner.ConsoleApp.Tests", "Blockche.Miner.ConsoleApp.Tests\Blockche.Miner.ConsoleApp.Tests.csproj", "{7EE0D788-60B0-4B01-BD35-1905EE50EFF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Miner.Common", "Blockche.Miner.Common\Blockche.Miner.Common.csproj", "{6193B27B-F03C-4403-A75F-F91C10CFE4BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{7EE0D788-60B0-4B01-BD35-1905EE50EFF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EE0D788-60B0-4B01-BD35-1905EE50EFF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EE0D788-60B0-4B01-BD35-1905EE50EFF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6193B27B-F03C-4403-A75F-F91C10CFE4BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6193B27B-F03C-4403-A75F-F91C10CFE4BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6193B27B-F03C-4403-A75F-F91C10CFE4BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6193B27B-F03C-4403-A75F-F91C10CFE4BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
