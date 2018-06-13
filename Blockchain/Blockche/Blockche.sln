@@ -3,15 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.Web", "Blockche.Blockchain.Web\Blockche.Blockchain.Web.csproj", "{F13E9098-C798-4974-8097-3F986BDE5C3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blockche.Blockchain.Web", "Blockche.Blockchain.Web\Blockche.Blockchain.Web.csproj", "{F13E9098-C798-4974-8097-3F986BDE5C3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.Models", "Blockche.Blockchain.Models\Blockche.Blockchain.Models.csproj", "{016B0917-163A-410C-B48E-2954F191A7AD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.Common", "Blockche.Blockchain.Common\Blockche.Blockchain.Common.csproj", "{95424079-9415-4BA2-AC7C-EB28E0D80D6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blockche.Blockchain.Common", "Blockche.Blockchain.Common\Blockche.Blockchain.Common.csproj", "{95424079-9415-4BA2-AC7C-EB28E0D80D6E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.Web.Tests", "Blockche.Blockchain.Web.Tests\Blockche.Blockchain.Web.Tests.csproj", "{954C2B51-C46A-4FAD-86C9-12F282370E7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blockche.Blockchain.Models", "Blockche.Blockchain.Models\Blockche.Blockchain.Models.csproj", "{036AD06A-A35D-4BBE-A177-F49672CC177E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blockche.Blockchain.Web.Tests", "Blockche.Blockchain.Web.Tests\Blockche.Blockchain.Web.Tests.csproj", "{73DD9A36-6175-405D-BF59-68D592242B91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blockche.Blockchain.Common.Tests", "Blockche.Blockchain.Common.Tests\Blockche.Blockchain.Common.Tests.csproj", "{92E7000A-B68B-4138-9057-554189092658}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{D5A0F9A0-2B35-4FD2-80D6-7479769ABBF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.ConsoleApp", "Blockche.Blockchain.ConsoleApp\Blockche.Blockchain.ConsoleApp.csproj", "{4B68F4EF-C082-424B-A3D7-B3574EB435DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,24 +29,34 @@ Global
 		{F13E9098-C798-4974-8097-3F986BDE5C3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F13E9098-C798-4974-8097-3F986BDE5C3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F13E9098-C798-4974-8097-3F986BDE5C3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{016B0917-163A-410C-B48E-2954F191A7AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{016B0917-163A-410C-B48E-2954F191A7AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{016B0917-163A-410C-B48E-2954F191A7AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{016B0917-163A-410C-B48E-2954F191A7AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95424079-9415-4BA2-AC7C-EB28E0D80D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95424079-9415-4BA2-AC7C-EB28E0D80D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95424079-9415-4BA2-AC7C-EB28E0D80D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95424079-9415-4BA2-AC7C-EB28E0D80D6E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{954C2B51-C46A-4FAD-86C9-12F282370E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{954C2B51-C46A-4FAD-86C9-12F282370E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{954C2B51-C46A-4FAD-86C9-12F282370E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{954C2B51-C46A-4FAD-86C9-12F282370E7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{036AD06A-A35D-4BBE-A177-F49672CC177E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{036AD06A-A35D-4BBE-A177-F49672CC177E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{036AD06A-A35D-4BBE-A177-F49672CC177E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{036AD06A-A35D-4BBE-A177-F49672CC177E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73DD9A36-6175-405D-BF59-68D592242B91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73DD9A36-6175-405D-BF59-68D592242B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73DD9A36-6175-405D-BF59-68D592242B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73DD9A36-6175-405D-BF59-68D592242B91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92E7000A-B68B-4138-9057-554189092658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92E7000A-B68B-4138-9057-554189092658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92E7000A-B68B-4138-9057-554189092658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92E7000A-B68B-4138-9057-554189092658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B68F4EF-C082-424B-A3D7-B3574EB435DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B68F4EF-C082-424B-A3D7-B3574EB435DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B68F4EF-C082-424B-A3D7-B3574EB435DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B68F4EF-C082-424B-A3D7-B3574EB435DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{954C2B51-C46A-4FAD-86C9-12F282370E7A} = {DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}
+		{73DD9A36-6175-405D-BF59-68D592242B91} = {DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}
+		{92E7000A-B68B-4138-9057-554189092658} = {DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}
+		{4B68F4EF-C082-424B-A3D7-B3574EB435DE} = {D5A0F9A0-2B35-4FD2-80D6-7479769ABBF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46A3250C-B250-49BB-BB02-F57ACBF6D7A2}
