@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Blockche.Blockchain.Common;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Math;
 using System;
 
 namespace Blockche.Blockchain.Models
@@ -12,9 +14,9 @@ namespace Blockche.Blockchain.Models
                            int fee,
                            string dateCreated,
                            string data,
-                           string senderPubKey,
-                           string transactionDataHash,
-                           string senderSignature,
+                           byte[] senderPubKey,
+                           byte[] transactionDataHash,
+                           BigInteger[] senderSignature,
                            int minedInBlockIndex,
                            bool transferSuccessful)
         {
@@ -26,12 +28,13 @@ namespace Blockche.Blockchain.Models
             this.Data = data;
             this.SenderPubKey = senderPubKey;
             this.TransactionDataHash = transactionDataHash;
-            if (string.IsNullOrEmpty(this.TransactionDataHash))
+            if (this.TransactionDataHash == null)
             {
                 this.CalculateDataHash();
             }
 
             this.SenderSignature = senderSignature;
+           
             this.MinedInBlockIndex = minedInBlockIndex;
             this.TransferSuccessful = transferSuccessful;
         }
@@ -53,7 +56,7 @@ namespace Blockche.Blockchain.Models
 
 
             var tranDataJSON = JsonConvert.SerializeObject(tranData);
-            this.TransactionDataHash = null; // CryptoUtils.sha256(tranDataJSON);
+            this.TransactionDataHash = CryptoUtils.CalcSHA256(tranDataJSON);
         }
 
         public string From { get; set; } // Sender address: 40 hex digits
@@ -62,11 +65,34 @@ namespace Blockche.Blockchain.Models
         public int Fee { get; set; }// Mining fee: integer
         public string DateCreated { get; set; } // ISO-8601 string
         public string Data { get; set; }// Optional data (e.g. payload or comments): string
-        public string SenderPubKey { get; set; } // 65 hex digits
-        public string TransactionDataHash { get; set; }// 64 hex digits
-        public string SenderSignature { get; set; } // hex_number[2][64]
+        public byte[] SenderPubKey { get; set; } // 65 hex digits
+        public byte[] TransactionDataHash { get; set; }// 64 hex digits
+        public BigInteger[] SenderSignature { get; set; } // hex_number[2][64]
         public int MinedInBlockIndex { get; set; } // integer
         public bool TransferSuccessful { get; set; } // bool
+
+        public bool IsSignatureValid { get;private set; } // bool
+
+        public void SetSignature(string senderPrivKeyHex)
+        {
+            //get private key as hex
+            BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
+
+            this.SenderSignature = CryptoUtils.SignData(privateKey, this.TransactionDataHash);
+
+            this.IsSignatureValid = CryptoUtils
+                .VerifySignature(senderPrivKeyHex, this.SenderSignature, this.TransactionDataHash);
+        }
+
+        /// <summary>
+        /// To be sure that it's right, first you have call SetSignature
+        /// </summary>
+        /// <returns>If the Signature is correct</returns>
+        public bool VerifySignature()
+        {
+            return this.IsSignatureValid;
+           
+        }
 
     }
 }

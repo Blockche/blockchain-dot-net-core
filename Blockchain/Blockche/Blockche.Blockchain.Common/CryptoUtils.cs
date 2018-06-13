@@ -33,6 +33,17 @@ namespace Blockche.Blockchain.Common
             return string.Concat(bytes.Select(s => s.ToString("x2")));
         }
 
+        public static byte[] HexToBytes(string hexString)
+        {
+            int NumberChars = hexString.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+            return bytes;
+        }
+
+       
+
         public static byte[] GetBytes(string data)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(data);
@@ -51,7 +62,7 @@ namespace Blockche.Blockchain.Common
         }
 
 
-        private static byte[] CalcSHA256(string text)
+        public static byte[] CalcSHA256(string text)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(text);
             Sha256Digest digest = new Sha256Digest();
@@ -208,7 +219,7 @@ namespace Blockche.Blockchain.Common
         /// <summary>
         /// Calculates deterministic ECDSA signature (with HMAC-SHA256), based on secp256k1 and RFC-6979.
         /// </summary>
-        private static BigInteger[] SignData(BigInteger privateKey, byte[] data)
+        public static BigInteger[] SignData(BigInteger privateKey, byte[] data)
         {
             ECPrivateKeyParameters keyParameters = new ECPrivateKeyParameters(privateKey,Domain);
             IDsaKCalculator kCalculator = new HMacDsaKCalculator(new Sha256Digest());
@@ -227,6 +238,13 @@ namespace Blockche.Blockchain.Common
             signer.Init(false, keyParameters);
 
             return signer.VerifySignature(msg, signature[0], signature[1]);
+        }
+
+        public static bool VerifySignature(string privateKeyHex, BigInteger[] signature, byte[] msg)
+        {
+            ECPublicKeyParameters exPubKey = ToPublicKey(privateKeyHex);
+            bool isVerified = VerifySignature(exPubKey, signature, msg);
+            return isVerified;
         }
 
 
