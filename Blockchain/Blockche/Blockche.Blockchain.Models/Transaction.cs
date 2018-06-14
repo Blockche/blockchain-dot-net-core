@@ -17,8 +17,8 @@ namespace Blockche.Blockchain.Models
                            byte[] senderPubKey,
                            byte[] transactionDataHash,
                            BigInteger[] senderSignature,
-                           int minedInBlockIndex,
-                           bool transferSuccessful)
+                           int? minedInBlockIndex =null,
+                           bool transferSuccessful = false)
         {
             this.From = from;
             this.To = to;
@@ -65,10 +65,10 @@ namespace Blockche.Blockchain.Models
         public int Fee { get; set; }// Mining fee: integer
         public string DateCreated { get; set; } // ISO-8601 string
         public string Data { get; set; }// Optional data (e.g. payload or comments): string
-        public byte[] SenderPubKey { get; set; } // 65 hex digits
-        public byte[] TransactionDataHash { get; set; }// 64 hex digits
+        public byte[] SenderPubKey { get; set; } // 65 hex digits || byte[]
+        public byte[] TransactionDataHash { get; set; }// 64 hex digits || byte[]
         public BigInteger[] SenderSignature { get; set; } // hex_number[2][64]
-        public int MinedInBlockIndex { get; set; } // integer
+        public int? MinedInBlockIndex { get; set; } // integer
         public bool TransferSuccessful { get; set; } // bool
 
         public bool IsSignatureValid { get;private set; } // bool

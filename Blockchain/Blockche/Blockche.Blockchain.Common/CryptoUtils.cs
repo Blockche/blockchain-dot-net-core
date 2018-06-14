@@ -61,6 +61,26 @@ namespace Blockche.Blockchain.Common
 
         }
 
+        public static string CalcRIPEMD160(byte[] keyBytes)
+        {
+            RipeMD160Digest digest = new RipeMD160Digest();
+            digest.BlockUpdate(keyBytes, 0, keyBytes.Length);
+            byte[] result = new byte[digest.GetDigestSize()];
+            digest.DoFinal(result, 0);
+            return BytesToHex(result);
+
+        }
+
+        public static string PublicKeyToAddress(byte[] keyBytes)
+        {
+            return CalcRIPEMD160(keyBytes);
+        }
+
+        public static string PublicKeyToAddress( string key)
+        {
+            return CalcRIPEMD160(key);
+        }
+
 
         public static byte[] CalcSHA256(string text)
         {
