@@ -25,11 +25,12 @@ namespace Blockche.Blockchain.Web
             return WebHost.CreateDefaultBuilder(args)
                 .UseUrls("http://*:5000")
                 .UseConfiguration(config)
-                  .Configure(app =>
-                  {
-                      app.Run(context =>
-                          context.Response.WriteAsync("Hello, World!"));
-                  })
+                .UseStartup<Startup>()
+                  //.Configure(app =>
+                  //{
+                  //    app.Run(context =>
+                  //        context.Response.WriteAsync("Hello, World!"));
+                  //})
                 .Build();
         }
     }
