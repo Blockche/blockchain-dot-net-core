@@ -6,6 +6,7 @@ using System;
 namespace Blockche.Blockchain.Models
 {
 
+    [Serializable]
     public class Transaction
     {
         public Transaction(string from,
@@ -40,7 +41,7 @@ namespace Blockche.Blockchain.Models
         }
 
 
-        private void CalculateDataHash()
+        public void CalculateDataHash()
         {
             var tranData = new
             {
@@ -48,7 +49,7 @@ namespace Blockche.Blockchain.Models
                 to = this.To,
                 value = this.Value,
                 fee = this.Fee,
-                dateCreated = this.DateCreated,
+                dateCreated = this.DateCreated, //test if that is null
                 data = this.Data,
                 senderPubKey = this.SenderPubKey
             };

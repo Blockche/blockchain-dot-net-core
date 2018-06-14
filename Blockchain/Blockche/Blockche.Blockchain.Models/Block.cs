@@ -14,9 +14,10 @@ namespace Blockche.Blockchain.Models
                     int difficulty,
                     byte[] prevBlockHash,
                     string minedBy,
-                    byte[] blockDataHash,
-                    int nonce, string dateCreated,
-                    byte[] blockHash)
+                    byte[] blockDataHash=null,
+                    int nonce = 0, 
+                    string dateCreated = null,
+                    byte[] blockHash = null)
         {
             Index = index;
             Transactions = transactions;
@@ -42,13 +43,13 @@ namespace Blockche.Blockchain.Models
             }
         }
 
-        private byte[] CalculateBlockHash()
+        public byte[] CalculateBlockHash()
         {
             var data =string.Format("{0}|{1}|{2}", this.BlockDataHash,  this.DateCreated, this.Nonce);
             return CryptoUtils.CalcSHA256(data);
         }
 
-        private byte[] CalculateBlockDataHash()
+        public byte[] CalculateBlockDataHash()
         {
             var blockData = new
             {
