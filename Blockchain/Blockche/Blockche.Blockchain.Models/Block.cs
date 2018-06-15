@@ -10,7 +10,7 @@ namespace Blockche.Blockchain.Models
     public class Block
     {
         public Block(int index,
-                    Transaction[] transactions,
+                    List<Transaction> transactions,
                     int difficulty,
                     byte[] prevBlockHash,
                     string minedBy,
@@ -78,7 +78,7 @@ namespace Blockche.Blockchain.Models
         }
 
         public int Index { get; set; } // integer
-        public Transaction[] Transactions { get; set; } // Transaction[]
+        public List<Transaction> Transactions { get; set; } // Transaction[]
         public int Difficulty { get; set; } // integer
         public byte[] PrevBlockHash { get; set; } // hex_number[64] || byte[32]
         public string MinedBy { get; set; } // address (40 hex digits)

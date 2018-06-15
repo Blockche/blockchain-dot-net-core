@@ -208,10 +208,10 @@ namespace Blockche.Blockchain.Models
 
 
         // @return map(address -> balance)
-        public Dictionary<string, int> CalcAllConfirmedBalances()
+        public Dictionary<string, long> CalcAllConfirmedBalances()
         {
             var transactions = this.GetConfirmedTransactions().ToList();
-            Dictionary<string, int> balances = new Dictionary<string, int>();
+            Dictionary<string, long> balances = new Dictionary<string, long>();
             foreach (var tran in transactions)
             {
                 if (!balances.ContainsKey(tran.From))
@@ -312,7 +312,7 @@ namespace Blockche.Blockchain.Models
             //TODO: test that with Date null??
             var nextBlockCandidate = new Block(
                 nextBlockIndex,
-                clonedTransactions.ToArray(),
+                clonedTransactions.ToList(),
                 this.CurrentDifficulty,
                 prevBlockHash,
                 minerAddress

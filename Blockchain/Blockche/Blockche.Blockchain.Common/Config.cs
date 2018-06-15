@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace Blockche.Blockchain.Common
 {
     public class Config
@@ -16,6 +17,7 @@ namespace Blockche.Blockchain.Common
 
         public const string NullAddress = "0000000000000000000000000000000000000000";
         public const string NullPubKey = "00000000000000000000000000000000000000000000000000000000000000000";
+                                          
 
         public const string NullSignaturePublicKey = "0000000000000000000000000000000000000000000000000000000000000000";
         public const string NullSignaturePrivateKey = NullSignaturePublicKey;
@@ -29,6 +31,11 @@ namespace Blockche.Blockchain.Common
 
             return sig;
         }
+
+
+        
+
+     
 
     }
 }

@@ -38,7 +38,10 @@ namespace Blockche.Blockchain.Common
             int NumberChars = hexString.Length;
             byte[] bytes = new byte[NumberChars / 2];
             for (int i = 0; i < NumberChars; i += 2)
+            {
+               // var len = i + 2 <= NumberChars ? 2 : 1;
                 bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+            }
             return bytes;
         }
 
@@ -165,6 +168,15 @@ namespace Blockche.Blockchain.Common
             Console.WriteLine("Blockchain address: " + addr);
         }
 
+        public static string  GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
+        {
+            BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
+
+            ECPoint pubKey = GetPublicKeyFromPrivateKey(privateKey);
+            string senderPubKeyCompressed = EncodeECPointHexCompressed(pubKey);
+
+            return senderPubKeyCompressed;
+        }
 
 
         public static void SignAndVerifyTransaction(string recipientAddress, int value, int fee,

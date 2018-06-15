@@ -21,7 +21,7 @@ namespace Blockche.Blockchain.Common
             return Regex.IsMatch(pubKey, regEx);
         }
 
-        public static bool IsValidTransferValue(int val)
+        public static bool IsValidTransferValue(long val)
         {
 
             return (val >= 0) && (val <= Config.MaxTransferValue);

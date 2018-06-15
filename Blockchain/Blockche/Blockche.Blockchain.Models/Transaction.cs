@@ -11,7 +11,7 @@ namespace Blockche.Blockchain.Models
     {
         public Transaction(string from,
                            string to,
-                           int value,
+                           long value,
                            int fee,
                            string dateCreated,
                            string data,
@@ -62,7 +62,7 @@ namespace Blockche.Blockchain.Models
 
         public string From { get; set; } // Sender address: 40 hex digits
         public string To { get; set; }// Recipient address: 40 hex digits
-        public int Value { get; set; }// Transfer value: integer (int or BigInteger) ??
+        public long Value { get; set; }// Transfer value: integer (int or BigInteger) ??
         public int Fee { get; set; }// Mining fee: integer
         public string DateCreated { get; set; } // ISO-8601 string
         public string Data { get; set; }// Optional data (e.g. payload or comments): string
@@ -94,6 +94,9 @@ namespace Blockche.Blockchain.Models
             return this.IsSignatureValid;
            
         }
+
+
+      
 
     }
 }
