@@ -15,7 +15,7 @@ namespace Blockche.Blockchain.Models
 
         public static Transaction GetGenesisFaucetTransaction()
         {
-            var pubKey = CryptoUtils.HexToBytes(Config.NullPubKey);
+            
             var signature = Config.GetNullSignature();
 
             var tran = new Transaction(
@@ -25,7 +25,7 @@ namespace Blockche.Blockchain.Models
             0,             // fee for mining
             GenesisDate,   // dateCreated
             "genesis tx",  // data (payload)
-            pubKey,    // senderPubKey
+            Config.NullPubKey,    // senderPubKey
             null,     // transactionDataHash
             signature, // senderSignature
             0,             // minedInBlockIndex

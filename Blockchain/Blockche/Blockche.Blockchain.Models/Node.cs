@@ -14,13 +14,13 @@ namespace Blockche.Blockchain.Models
 
         private Node(string serverHost, string serverPort, Blockchain blockchain)
         {
-            _instance.NodeId = Guid.NewGuid().ToString();
-            _instance.Host = serverHost;
-            _instance.Port = serverPort;
-            _instance.SelfUrl = string.Format("http://{0}:{1}", serverHost, serverPort);
-            _instance.Peers = new Dictionary<string, string>();
-            _instance.Chain = blockchain;
-            _instance.ChainId = CryptoUtils.BytesToHex(blockchain.Blocks[0].BlockHash);
+            this.NodeId = Guid.NewGuid().ToString();
+            this.Host = serverHost;
+            this.Port = serverPort;
+            this.SelfUrl = string.Format("http://{0}:{1}", serverHost, serverPort);
+            this.Peers = new Dictionary<string, string>();
+            this.Chain = blockchain;
+            this.ChainId = CryptoUtils.BytesToHex(blockchain.Blocks[0].BlockHash);
         }
 
         public static Node GetInstance(string serverHost, string serverPort, Blockchain blockchain)

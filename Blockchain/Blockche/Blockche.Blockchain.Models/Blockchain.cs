@@ -153,7 +153,7 @@ namespace Blockche.Blockchain.Models
             if (!ValidationUtils.IsValidAddress(tranData.To))
                 throw new ArgumentException("Invalid recipient address:" + tranData.To);
 
-            if (!ValidationUtils.IsValidPublicKey(CryptoUtils.BytesToHex(tranData.SenderPubKey)))
+            if (!ValidationUtils.IsValidPublicKey(tranData.SenderPubKey))
                 throw new ArgumentException("Invalid public key:" + tranData.SenderPubKey);
 
             var senderAddr = CryptoUtils.PublicKeyToAddress(tranData.SenderPubKey);
@@ -251,7 +251,7 @@ namespace Blockche.Blockchain.Models
                 0,                        // fee (for mining)
                 GeneralUtils.NowInISO8601(), // dateCreated
                 "coinbase tx",            // data (payload / comments)
-                CryptoUtils.HexToBytes(Config.NullPubKey),        // senderPubKey
+                Config.NullPubKey,        // senderPubKey
                 null,                // transactionDataHash
                 Config.GetNullSignature(),     // senderSignature
                 nextBlockIndex,           // minedInBlockIndex
