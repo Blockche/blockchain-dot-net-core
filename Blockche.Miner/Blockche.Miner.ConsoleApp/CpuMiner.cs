@@ -1,9 +1,7 @@
 ﻿using Blockche.Miner.Common;
+using Blockche.Miner.ConsoleApp.JobProducer;
+using Blockche.Miner.ConsoleApp.Logger;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,53 +9,86 @@ namespace Blockche.Miner.ConsoleApp
 {
     public class CpuMiner
     {
-        private readonly int instanceNonce;
-        private readonly CancellationTokenSource tokenSource;
+        private readonly IJobProducer jobProducer;
+        private readonly ILogger logger;
+        private readonly Random rnd;
 
-        private int difficulty;
-        private string prevBlockHash;
+        private bool isMining;
+        private bool isStarted;
+        private JobDTO job;
 
-        public CpuMiner(int instanceNonce)
+        public CpuMiner(IJobProducer jobProducer, ILogger logger, int seed)
         {
-            this.instanceNonce = instanceNonce;
-            this.tokenSource = new CancellationTokenSource();
+            this.jobProducer = jobProducer;
+            this.logger = logger;
+            this.rnd = new Random(seed);
         }
 
-        public async Task Mine(CancellationToken cancellationToken)
+        public void Start()
         {
-            while (!cancellationToken.IsCancellationRequested)
+            this.logger.Log($"Miner start");
+
+            this.jobProducer.JobCreated -= this.JobCreatedHandler;
+            this.jobProducer.JobCreated += this.JobCreatedHandler;
+
+            this.isStarted = true;
+        }
+
+        public void Stop()
+        {
+            this.logger.Log($"Miner stop");
+
+            this.jobProducer.JobCreated -= this.JobCreatedHandler;
+
+            this.isStarted = false;
+        }
+
+        private void JobCreatedHandler(object sender, JobCreatedEventArgs e)
+        {
+            if (!this.isStarted)
             {
-                var res = await MineBlock(this.tokenSource.Token, 0, "asd", "41", 2);
+                this.logger.Log($"Job created {e.Job.Nonce} {e.Job.Difficulty} but we are not mining");
+                return;
             }
+
+            this.logger.Log($"Job created {e.Job.Nonce} {e.Job.Difficulty}");
+
+            this.MineBlock(e.Job).GetAwaiter().GetResult();
         }
 
-        public Task<long> MineBlock(CancellationToken cancellationToken, long nonce, string blockDataHash, string prevBlockHash, int difficulty)
+        private async Task MineBlock(JobDTO job)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            this.isMining = true;
+
+            while (this.isMining && this.isStarted)
             {
-                if (IsValidHashNonce(++nonce, blockDataHash, prevBlockHash, difficulty))
+                if (IsValidHashNonce(job))
                 {
-                    Console.WriteLine($"{this.instanceNonce} Found block!");
-                    return Task.FromResult(nonce);
+                    this.isMining = false;
+                    await this.jobProducer.SubmitJob(job);
                 }
-            }
 
-            return Task.FromCanceled<long>(cancellationToken);
+                this.ChangeNonce(job);
+            }
         }
 
-        private bool IsValidHashNonce(long nonce, string blockDataHash, string prevBlockHash, int difficulty)
+        private void ChangeNonce(JobDTO job)
         {
-            var hash = HashHelper.ComputeSHA256($"{prevBlockHash}{blockDataHash}{nonce}");
-            for (int i = 0; i < difficulty; i++)
+            // TODO: Add random numbers
+            job.Nonce++;
+        }
+
+        private bool IsValidHashNonce(JobDTO job)
+        {
+            var hash = HashHelper.ComputeSHA256($"{job.TxHash}{job.Nonce}");
+            for (int i = 0; i < job.Difficulty; i++)
             {
                 if (hash[i] != '0')
                 {
-                    Console.WriteLine($"{this.instanceNonce} Checking hash ... invalid");
                     return false;
                 }
             }
 
-            Console.WriteLine($"{this.instanceNonce} Checking hash ... valid");
             return true;
         }
     }
