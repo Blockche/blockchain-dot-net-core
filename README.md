@@ -1,2 +1,10 @@
 # blockchain-dot-net-core
 Sample blockchain written on C# and using .Net Core 2.1
+
+-Using Bouncy Castle for Cryptography
+-Swagger for Api display (Can be opened on {url}/swagger )
+
+
+#To run the a node:
+- Go to web project folder and, open Power Shell or Cmd and type : dotnet run (this will run the oplication on the default 5005, which is set up in hosting.json file)
+- When want to run another nodes do the same but with specifing urls like that : dotnet run --urls http://localhost:5001
