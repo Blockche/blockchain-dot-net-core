@@ -12,16 +12,17 @@ namespace Blockche.Miner.ConsoleApp
         private readonly IJobProducer jobProducer;
         private readonly ILogger logger;
         private readonly Random rnd;
+        private readonly byte[] buffer;
 
         private bool isMining;
         private bool isStarted;
-        private JobDTO job;
 
         public CpuMiner(IJobProducer jobProducer, ILogger logger, int seed)
         {
             this.jobProducer = jobProducer;
             this.logger = logger;
             this.rnd = new Random(seed);
+            this.buffer = new byte[8];
         }
 
         public void Start()
@@ -60,22 +61,44 @@ namespace Blockche.Miner.ConsoleApp
         {
             this.isMining = true;
 
+            // Initially set to random nonce
+            this.RandomizeNonce(job);
+
             while (this.isMining && this.isStarted)
             {
+
                 if (IsValidHashNonce(job))
                 {
                     this.isMining = false;
                     await this.jobProducer.SubmitJob(job);
                 }
 
-                this.ChangeNonce(job);
+                this.GetNextNonce(job);
             }
         }
 
-        private void ChangeNonce(JobDTO job)
+        private void GetNextNonce(JobDTO job)
         {
-            // TODO: Add random numbers
-            job.Nonce++;
+            unchecked
+            {
+                job.Nonce++;
+            }
+
+            while (job.Nonce < 0)
+            {
+                rnd.NextBytes(this.buffer);
+                job.Nonce = BitConverter.ToInt64(this.buffer, 0);
+            }
+        }
+
+        private void RandomizeNonce(JobDTO job)
+        {
+            do
+            {
+                rnd.NextBytes(this.buffer);
+                job.Nonce = BitConverter.ToInt64(this.buffer, 0);
+            }
+            while (job.Nonce < 0);
         }
 
         private bool IsValidHashNonce(JobDTO job)
