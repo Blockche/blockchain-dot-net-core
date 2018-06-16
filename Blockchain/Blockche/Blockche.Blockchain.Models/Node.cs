@@ -47,5 +47,63 @@ namespace Blockche.Blockchain.Models
         public Dictionary<string, string> Peers { get; set; }// a map(nodeId --> url) of the peers, connected to this node
         public Blockchain Chain { get; set; } // the blockchain (blocks, transactions, ...)
         public string ChainId { get; set; }  // the unique chain ID (hash of the genesis block)
+
+
+        public void BroadcastTransactionToAllPeers(Transaction tran)
+        {
+            foreach (var nodeId in this.Peers)
+            {
+                var peerUrl = this.Peers[nodeId.Key];
+
+                Console.WriteLine("Broadcasting a transaction {0} to peer {1}"
+                    , CryptoUtils.BytesToHex(tran.TransactionDataHash), peerUrl);
+
+                try
+                {
+                    var result = WebRequester
+                    .Post(peerUrl + "/api/transactions/send", tran);
+                }
+                catch (Exception ex)
+                {
+
+                    Console
+                        .WriteLine("Broadcasting a transaction to {0} failed, due to {1}"
+                        , peerUrl, ex.Message);
+                }
+
+
+            }
+        }
+
+        public void BroadcastTransactionToAllPeers()
+        {
+            var notification = new
+            {
+                blocksCount = this.Chain.Blocks.Count,
+                cumulativeDifficulty = this.Chain.CalcCumulativeDifficulty(),
+                nodeUrl = this.SelfUrl
+            };
+
+            foreach (var nodeId in this.Peers)
+            {
+
+                var peerUrl = this.Peers[nodeId.Key];
+                Console.WriteLine("Notifying peer {0} about the new block", peerUrl);
+
+                try
+                {
+                    var result = WebRequester
+                    .Post(peerUrl + "/api/peers/notify-new-block", notification);
+                }
+                catch (Exception ex)
+                {
+
+                    Console
+                        .WriteLine("Notifying peer {0} failed, due to {1}", peerUrl, ex.Message);
+                }
+
+            }
+
+        }
     }
 }

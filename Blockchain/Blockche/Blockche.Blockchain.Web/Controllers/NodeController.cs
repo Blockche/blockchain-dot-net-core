@@ -56,14 +56,14 @@ namespace Blockche.Blockchain.Web.Controllers
         {
 
             var data = this.GetNodeSingleton().Chain = new Models.Blockchain(Faucet.GetGenesisBlock(), Config.StartDifficulty);
-            return Ok(new {  message = "The chain was reset to its genesis block"});
+            return Ok(new { message = "The chain was reset to its genesis block" });
         }
 
 
         // GET api/Node/Debug/Mine
         [HttpGet]
         [Route("Debug/Mine/{minerAddress}/{difficulty}")]
-        public IActionResult Reset(string minerAddress, int difficulty=3)
+        public IActionResult Reset(string minerAddress, int difficulty = 3)
         {
 
             var result = this.GetNodeSingleton().Chain.MineNextBlock(minerAddress, difficulty);
@@ -81,7 +81,7 @@ namespace Blockche.Blockchain.Web.Controllers
             return Ok(result);
         }
 
-        // GET api/blocks
+        // GET api/blocks/{index}
         [HttpGet]
         [Route("Blocks/{index}")]
         public IActionResult Blocks(int index)
@@ -91,63 +91,106 @@ namespace Blockche.Blockchain.Web.Controllers
             return Ok(result);
         }
 
-     
 
-      
+
+        // GET api/transactions/pending
+        [HttpGet]
+        [Route("transactions/pending")]
+        public IActionResult PendingTransactions()
+        {
+
+            var result = this.GetNodeSingleton().Chain.PendingTransactions;
+            return Ok(result);
+        }
+
+        // GET api/transactions/confirmed
+        [HttpGet]
+        [Route("transactions/confirmed")]
+        public IActionResult ConfirmedTransactions()
+        {
+
+            var result = this.GetNodeSingleton().Chain.GetConfirmedTransactions();
+            return Ok(result);
+        }
+
+        // GET api/transactions/{tranHash}
+        [HttpGet]
+        [Route("transactions/{tranHash}")]
+        public IActionResult ConfirmedTransactions(string tranHash)
+        {
+
+            var tran = this.GetNodeSingleton().Chain.GetTransactionByHash(tranHash);
+            return Ok(tran);
+
+        }
+
+        // GET api/balances
+        [HttpGet]
+        [Route("balances")]
+        public IActionResult Balances()
+        {
+            var balances = this.GetNodeSingleton().Chain.CalcAllConfirmedBalances();
+            return Ok(balances);
+
+        }
+
+        // GET api/transactions/address/{address}
+        [HttpGet]
+        [Route("transactions/address/{address}")]
+        public IActionResult TransactionsByAddress(string address)
+        {
+
+            var tran = this.GetNodeSingleton().Chain.GetTransactionHistory(address);
+            return Ok(tran);
+
+        }
+
+        // GET api/balance/address/{address}
+        [HttpGet]
+        [Route("balance/address/{address}")]
+        public IActionResult GetAccountBalance(string address)
+        {
+
+            var tran = this.GetNodeSingleton().Chain.GetAccountBalance(address);
+            return Ok(tran);
+
+        }
+
+        // GET api/transactions/send
+        [HttpPost]
+        [Route("transactions/send")]
+        public IActionResult SendTransaction(Transaction tran)
+        {
+
+            if (tran.TransactionDataHash != null)
+            {
+                // Added a new pending transaction --> broadcast it to all known peers
+                this.GetNodeSingleton().BroadcastTransactionToAllPeers(tran);
+
+                return Ok(new { transactionDataHash = tran.TransactionDataHash });
+               
+            }
+
+            return BadRequest("TransactionDataHash value missing:");
+        }
+
+   
+
     }
 }
 
 
 
-//app.get('/transactions/pending', (req, res) => {
-//    res.json(node.chain.getPendingTransactions());
-//});
 
-//app.get('/transactions/confirmed', (req, res) => {
-//    res.json(node.chain.getConfirmedTransactions());
-//});
 
-//app.get('/transactions/:tranHash', (req, res) => {
-//    let tranHash = req.params.tranHash;
-//    let transaction = node.chain.getTransactionByHash(tranHash);
-//    if (transaction)
-//        res.json(transaction);
-//    else
-//        res.status(HttpStatus.NOT_FOUND).json({ errorMsg: "Invalid transaction hash"});
-//});
 
-//app.get('/balances', (req, res) => {
-//    let confirmedBalances = node.chain.calcAllConfirmedBalances();
-//res.json(confirmedBalances);
-//});
 
-//app.get('/address/:address/transactions', (req, res) => {
-//    let address = req.params.address;
-//    let tranHistory = node.chain.getTransactionHistory(address);
-//res.json(tranHistory);
-//});
 
-//app.get('/address/:address/balance', (req, res) => {
-//    let address = req.params.address;
-//    let balance = node.chain.getAccountBalance(address);
-//    if (balance.errorMsg)
-//        res.status(HttpStatus.NOT_FOUND);
-//res.json(balance);
-//});
 
-//app.post('/transactions/send', (req, res) => {
-//    let tran = node.chain.addNewTransaction(req.body);
-//    if (tran.transactionDataHash) {
-//        // Added a new pending transaction --> broadcast it to all known peers
-//        node.broadcastTransactionToAllPeers(tran);
 
-//        res.status(HttpStatus.CREATED).json({
-//    transactionDataHash: tran.transactionDataHash
-//        });
-//    }
-//    else
-//        res.status(HttpStatus.BAD_REQUEST).json(tran);
-//});
+
+
+
 
 //app.get('/peers', (req, res) => {
 //    res.json(node.peers);
@@ -242,32 +285,9 @@ namespace Blockche.Blockchain.Web.Controllers
 //    }
 //});
 
-//node.notifyPeersAboutNewBlock = async function()
-//{
-//    let notification = {
-//        blocksCount: node.chain.blocks.length,
-//        cumulativeDifficulty: node.chain.calcCumulativeDifficulty(),
-//        nodeUrl: node.selfUrl
-//    };
-//    for (let nodeId in node.peers) {
-//        let peerUrl = node.peers[nodeId];
-//logger.debug(`Notifying peer ${peerUrl} about the new block`);
-//        axios.post(peerUrl + "/peers/notify-new-block", notification)
-//            .then(function(){ }).catch(function(){})
-//    }
-//};
 
-//node.broadcastTransactionToAllPeers = async function(tran)
-//{
-//    for (let nodeId in node.peers)
-//    {
-//        let peerUrl = node.peers[nodeId];
-//        logger.debug(`Broadcasting a transaction ${ tran.transactionsHash}
-//        to peer ${ peerUrl}`);
-//        axios.post(peerUrl + "/transactions/send", tran)
-//            .then(function(){ }).catch (function(){ })
-//    }
-//    };
+
+
 
 //    node.syncChainFromPeerInfo = async function(peerChainInfo) {
 //        try
