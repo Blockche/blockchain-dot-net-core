@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Blockche.Blockchain.Models
 {
-    public class AboutInfo
+    public class AboutInfo : Peer
     {
         public string About { get; set; }
         public string NodeId { get; set; }
         public string ChainId { get; set; }
-        public string NodeUrl { get; set; }
+        
         public int Peers { get; set; }
         public int CurrentDifficulty { get; set; }
         public int BlocksCount { get; set; }

@@ -6,6 +6,7 @@ using Blockche.Blockchain.Common;
 using Blockche.Blockchain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Blockche.Blockchain.Web.Controllers
 {
@@ -156,7 +157,7 @@ namespace Blockche.Blockchain.Web.Controllers
 
         }
 
-        // GET api/transactions/send
+        // POST api/transactions/send
         [HttpPost]
         [Route("transactions/send")]
         public IActionResult SendTransaction(Transaction tran)
@@ -168,13 +169,142 @@ namespace Blockche.Blockchain.Web.Controllers
                 this.GetNodeSingleton().BroadcastTransactionToAllPeers(tran);
 
                 return Ok(new { transactionDataHash = tran.TransactionDataHash });
-               
+
             }
 
             return BadRequest("TransactionDataHash value missing:");
         }
 
-   
+        // GET api/peers
+        [HttpGet]
+        [Route("peers")]
+        public IActionResult Peers()
+        {
+
+            return Ok(this.GetNodeSingleton().Peers);
+        }
+
+
+        // POST api/peers/connect
+        [HttpPost]
+        [Route("peers/connect")]
+        public IActionResult ConnectoToPeer(Peer info)
+        {
+            var peerUrl = info.NodeUrl;
+            if (string.IsNullOrEmpty(peerUrl))
+                return BadRequest("Missing 'peerUrl' in the request body");
+
+            Console.WriteLine("Trying to connect to peer: " + peerUrl);
+            try
+            {
+                var node = this.GetNodeSingleton();
+                var result = JsonConvert.DeserializeObject<AboutInfo>(WebRequester.Get(peerUrl + "/api/info"));
+                if (node.NodeId == result.NodeId)
+                {
+                    return BadRequest("Cannot connect to self");
+                }
+                else if (node.Peers[result.NodeId] != null)
+                {
+                    return BadRequest("Error: already connected to peer: " + peerUrl);
+                }
+                else if (node.ChainId != result.ChainId)
+                {
+                    return BadRequest("Error: chain ID cannot be different");
+                }
+                else
+                {
+                    // Remove all peers with the same URL + add the new peer ?????
+                    //why - isn't this handled by the second check??
+                    foreach (var nodeId in node.Peers)
+                        if (node.Peers[nodeId.Key] == peerUrl)
+                            node.Peers.Remove(nodeId.Key);
+
+
+                    node.Peers[result.NodeId] = peerUrl;
+                    Console.WriteLine("Successfully connected to peer: " + peerUrl);
+
+                    // Try to connect back the remote peer to self
+                    WebRequester.Post(peerUrl + "/api/peers/connect", new Peer() { NodeUrl = node.SelfUrl });
+
+
+                    // Synchronize the blockchain + pending transactions
+                    node.SyncChainFromPeerInfo(result);
+                    node.SyncPendingTransactionsFromPeerInfo(result);
+
+                    return Ok(new { message = "Connected to peer: " + peerUrl });
+                }
+            }
+
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error: connecting to peer: {0} failed", peerUrl);
+                return BadRequest("Cannot connect to peer: " + peerUrl);
+
+            }
+
+        }
+
+        // POST api/peers/notify-new-block
+        [HttpPost]
+        [Route("/peers/notify-new-block")]
+        public IActionResult NotifyNewBlock(AboutInfo info)
+        {
+
+            this.GetNodeSingleton().SyncChainFromPeerInfo(info);
+            return Ok(new { message = "Thank you for the notification." });
+        }
+
+        // GET api/mining/get-mining-job/{address}
+        [HttpGet]
+        [Route("mining/get-mining-job/{address}")]
+        public IActionResult Peers(string address)
+        {
+            var blockCandidate = this.GetNodeSingleton().Chain.GetMiningJob(address);
+         
+            return Ok(new {
+                index= blockCandidate.Index,
+                transactionsIncluded= blockCandidate.Transactions.Count,
+                difficulty = blockCandidate.Difficulty,
+                expectedReward = blockCandidate.Transactions[0].Value,
+                rewardAddress= blockCandidate.Transactions[0].To,
+                blockDataHash =CryptoUtils.BytesToHex( blockCandidate.BlockDataHash)
+            });
+        }
+
+
+        // POST api/mining/submit-mined-block
+        [HttpPost]
+        [Route("/mining/submit-mined-block")]
+        public IActionResult SubmitMinedBlock(Block block)
+        {
+            //let blockDataHash = req.body.blockDataHash;
+            //let dateCreated = req.body.dateCreated;
+            //let nonce = req.body.nonce;
+            //let blockHash = req.body.blockHash;
+            try
+            {
+                var result = this.GetNodeSingleton().Chain.SubmitMinedBlock(
+                block.BlockDataHash, block.DateCreated, block.Nonce, block.BlockHash);
+                this.GetNodeSingleton().NotifyPeersAboutNewBlock();
+
+                return Ok(new { 
+
+                    message = string.Format("Block accepted, reward paid: {0} microcoins", result.Transactions[0].Value)
+
+                    });
+
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        
+
+
 
     }
 }
@@ -192,98 +322,11 @@ namespace Blockche.Blockchain.Web.Controllers
 
 
 
-//app.get('/peers', (req, res) => {
-//    res.json(node.peers);
-//});
 
-//app.post('/peers/connect', (req, res) => {
-//    let peerUrl = req.body.peerUrl;
-//    if (peerUrl === undefined)
-//        return res.status(HttpStatus.BAD_REQUEST)
-//            .json({ errorMsg: "Missing 'peerUrl' in the request body"});
 
-//    logger.debug("Trying to connect to peer: " + peerUrl);
-//    axios.get(peerUrl + "/info")
-//        .then(function(result) {
-//    if (node.nodeId === result.data.nodeId)
-//    {
-//        res.status(HttpStatus.CONFLICT)
-//            .json({ errorMsg: "Cannot connect to self"});
-//    }
-//    else if (node.peers[result.data.nodeId])
-//    {
-//        logger.debug("Error: already connected to peer: " + peerUrl);
-//        res.status(HttpStatus.CONFLICT)
-//            .json({ errorMsg: "Already connected to peer: " + peerUrl});
-//    }
-//    else if (node.chainId !== result.data.chainId)
-//    {
-//        logger.debug("Error: chain ID cannot be different");
-//        res.status(HttpStatus.BAD_REQUEST)
-//            .json({ errorMsg: "Nodes should have the same chain ID"});
-//    }
-//    else
-//    {
-//                // Remove all peers with the same URL + add the new peer
-//                for (let nodeId in node.peers)
-//            if (node.peers[nodeId] === peerUrl)
-//                delete node.peers[nodeId];
-//        node.peers[result.data.nodeId] = peerUrl;
-//        logger.debug("Successfully connected to peer: " + peerUrl);
 
-//        // Try to connect back the remote peer to self
-//        axios.post(peerUrl + "/peers/connect", { peerUrl: node.selfUrl})
-//                    .then(function(){ }).catch (function(){ });
 
-//        // Synchronize the blockchain + pending transactions
-//        node.syncChainFromPeerInfo(result.data);
-//        node.syncPendingTransactionsFromPeerInfo(result.data);
 
-//        res.json({ message: "Connected to peer: " + peerUrl});
-//        }
-//    })
-//        .catch (function(error) {
-//        logger.debug(`Error: connecting to peer: ${ peerUrl}
-//        failed.`);
-//        res.status(HttpStatus.BAD_REQUEST).json(
-//                 { errorMsg: "Cannot connect to peer: " + peerUrl});
-//    });
-//    });
-
-//    app.post('/peers/notify-new-block', (req, res) => {
-//    node.syncChainFromPeerInfo(req.body);
-//    res.json({ message: "Thank you for the notification." });
-//});
-
-//app.get('/mining/get-mining-job/:address', (req, res) => {
-//    let address = req.params.address;
-//    let blockCandidate = node.chain.getMiningJob(address);
-//res.json({
-//        index: blockCandidate.index,
-//        transactionsIncluded: blockCandidate.transactions.length,
-//        difficulty: blockCandidate.difficulty,
-//        expectedReward: blockCandidate.transactions[0].value,
-//        rewardAddress: blockCandidate.transactions[0].to,
-//        blockDataHash: blockCandidate.blockDataHash,
-//    });
-//});
-
-//app.post('/mining/submit-mined-block', (req, res) => {
-//    let blockDataHash = req.body.blockDataHash;
-//let dateCreated = req.body.dateCreated;
-//let nonce = req.body.nonce;
-//let blockHash = req.body.blockHash;
-//let result = node.chain.submitMinedBlock(
-//    blockDataHash, dateCreated, nonce, blockHash);
-//    if (result.errorMsg)
-//        res.status(HttpStatus.BAD_REQUEST).json(result);
-//    else {
-//        res.json({"message":
-//            `Block accepted, reward paid: ${result.transactions[0].value} microcoins`
-//        });
-//        node.notifyPeersAboutNewBlock();
-//    }
-//});
 
 
 
