@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Nethereum.Signer" Version="2.5.1" />
   </ItemGroup>
 
 </Project>
