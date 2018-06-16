@@ -1,4 +1,5 @@
 ﻿using Blockche.Blockchain.Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -75,7 +76,7 @@ namespace Blockche.Blockchain.Models
             }
         }
 
-        public void BroadcastTransactionToAllPeers()
+        public void NotifyPeersAboutNewBlock()
         {
             var notification = new
             {
@@ -105,5 +106,64 @@ namespace Blockche.Blockchain.Models
             }
 
         }
+
+        public void SyncChainFromPeerInfo(AboutInfo peerChainInfo)
+        {
+
+            try
+            {
+                var thisChainDiff = this.Chain.CalcCumulativeDifficulty();
+                var peerChainDiff = peerChainInfo.CumulativeDifficulty;
+                if (peerChainDiff > thisChainDiff)
+                {
+                    Console.WriteLine("@Chain sync started.Peer: {0}." +
+                        " Expected chain length = {1}, expected cummulative difficulty = {2}.",
+                        peerChainInfo.NodeUrl, peerChainInfo.BlocksCount, peerChainDiff);
+
+                    var blocks = JsonConvert.DeserializeObject<List<Block>>(WebRequester.Get(peerChainInfo.NodeUrl + "/blocks"));
+
+                    var chainIncreased = this.Chain.ProcessLongerChain(blocks);
+                    if (chainIncreased)
+                    {
+                        this.NotifyPeersAboutNewBlock();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error loading the chain: " + ex.Message);
+            }
+        }
+
+
+
+        public void SyncPendingTransactionsFromPeerInfo(AboutInfo peerChainInfo)
+        {
+            try
+            {
+                if (peerChainInfo.PendingTransactions > 0)
+                {
+                    Console.WriteLine(
+                        "Pending transactions sync started.Peer: {0}", peerChainInfo.NodeUrl);
+                    var transactions = JsonConvert.DeserializeObject<List<Transaction>>(WebRequester.Get(
+                        peerChainInfo.NodeUrl + "/transactions/pending"));
+
+                    foreach (var tran in transactions)
+                    {
+                        var addedTran = this.Chain.AddNewTransaction(tran);
+                        if (addedTran.TransactionDataHash != null)
+                        {
+                            // Added a new pending tx --> broadcast it to all known peers
+                            this.BroadcastTransactionToAllPeers(addedTran);
+                        }
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine("Error loading the pending transactions: " + err.Message);
+            }
+        }
+
     }
 }

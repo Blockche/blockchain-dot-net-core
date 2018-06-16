@@ -20,18 +20,18 @@ namespace Blockche.Blockchain.Web.Controllers
         {
             var node = this.GetNodeSingleton();
 
-            var aboutData = new
+            var aboutData = new AboutInfo()
             {
-                about = "BlokcheChain/0.01-C#",
-                nodeId = node.NodeId,
-                chainId = node.ChainId,
-                nodeUrl = node.SelfUrl,
-                peers = node.Peers.Keys.Count,
-                currentDifficulty = node.Chain.CurrentDifficulty,
-                blocksCount = node.Chain.Blocks.Count,
-                cumulativeDifficulty = node.Chain.CalcCumulativeDifficulty(),
-                confirmedTransactions = node.Chain.GetConfirmedTransactions().Count(),
-                pendingTransactions = node.Chain.PendingTransactions.Count,
+                About = "BlokcheChain/0.01-C#",
+                NodeId = node.NodeId,
+                ChainId = node.ChainId,
+                NodeUrl = node.SelfUrl,
+                Peers = node.Peers.Keys.Count,
+                CurrentDifficulty = node.Chain.CurrentDifficulty,
+                BlocksCount = node.Chain.Blocks.Count,
+                CumulativeDifficulty = node.Chain.CalcCumulativeDifficulty(),
+                ConfirmedTransactions = node.Chain.GetConfirmedTransactions().Count(),
+                PendingTransactions = node.Chain.PendingTransactions.Count,
             };
 
 
@@ -289,50 +289,5 @@ namespace Blockche.Blockchain.Web.Controllers
 
 
 
-//    node.syncChainFromPeerInfo = async function(peerChainInfo) {
-//        try
-//        {
-//            let thisChainDiff = node.chain.calcCumulativeDifficulty();
-//            let peerChainDiff = peerChainInfo.cumulativeDifficulty;
-//            if (peerChainDiff > thisChainDiff)
-//            {
-//                logger.debug(`Chain sync started.Peer: ${ peerChainInfo.nodeUrl}. Expected chain length = ${ peerChainInfo.blocksCount}, expected cummulative difficulty = ${ peerChainDiff}.`);
-//                let blocks = (await axios.get(peerChainInfo.nodeUrl + "/blocks")).data;
-//                let chainIncreased = node.chain.processLongerChain(blocks);
-//                if (chainIncreased)
-//                {
-//                    node.notifyPeersAboutNewBlock();
-//                }
-//            }
-//        }
-//        catch (err)
-//        {
-//            logger.error("Error loading the chain: " + err);
-//        }
-//    };
 
-//    node.syncPendingTransactionsFromPeerInfo = async function(peerChainInfo) {
-//        try
-//        {
-//            if (peerChainInfo.pendingTransactions > 0)
-//            {
-//                logger.debug(
-//                `Pending transactions sync started.Peer: ${ peerChainInfo.nodeUrl}`);
-//                let transactions = (await axios.get(
-//                    peerChainInfo.nodeUrl + "/transactions/pending")).data;
-//                for (let tran of transactions)
-//                {
-//                    let addedTran = node.chain.addNewTransaction(tran);
-//                    if (addedTran.transactionDataHash)
-//                    {
-//                        // Added a new pending tx --> broadcast it to all known peers
-//                        node.broadcastTransactionToAllPeers(addedTran);
-//                    }
-//                }
-//            }
-//        }
-//        catch (err)
-//        {
-//            logger.error("Error loading the pending transactions: " + err);
-//        }
-//    };
+
