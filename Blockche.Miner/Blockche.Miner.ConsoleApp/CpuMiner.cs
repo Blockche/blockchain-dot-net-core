@@ -11,6 +11,7 @@ namespace Blockche.Miner.ConsoleApp
     {
         private readonly IJobProducer jobProducer;
         private readonly ILogger logger;
+        private readonly int seed;
         private readonly Random rnd;
         private readonly byte[] buffer;
 
@@ -21,13 +22,14 @@ namespace Blockche.Miner.ConsoleApp
         {
             this.jobProducer = jobProducer;
             this.logger = logger;
+            this.seed = seed;
             this.rnd = new Random(seed);
             this.buffer = new byte[8];
         }
 
         public void Start()
         {
-            this.logger.Log($"Miner start");
+            this.logger.Log($"[{this.seed}] Miner start");
 
             this.jobProducer.JobCreated -= this.JobCreatedHandler;
             this.jobProducer.JobCreated += this.JobCreatedHandler;
@@ -37,7 +39,7 @@ namespace Blockche.Miner.ConsoleApp
 
         public void Stop()
         {
-            this.logger.Log($"Miner stop");
+            this.logger.Log($"[{this.seed}] Miner stop");
 
             this.jobProducer.JobCreated -= this.JobCreatedHandler;
 
@@ -48,11 +50,11 @@ namespace Blockche.Miner.ConsoleApp
         {
             if (!this.isStarted)
             {
-                this.logger.Log($"Job created {e.Job.Nonce} {e.Job.Difficulty} but we are not mining");
+                //this.logger.Log($"[{this.seed}] Job created {e.Job.Difficulty} but we are not mining");
                 return;
             }
 
-            this.logger.Log($"Job created {e.Job.Nonce} {e.Job.Difficulty}");
+            //this.logger.Log($"[{this.seed}] Job created {e.Job.Difficulty}");
 
             this.MineBlock(e.Job).GetAwaiter().GetResult();
         }
@@ -70,7 +72,7 @@ namespace Blockche.Miner.ConsoleApp
                 if (IsValidHashNonce(job))
                 {
                     this.isMining = false;
-                    await this.jobProducer.SubmitJob(job);
+                    await this.jobProducer.SubmitJob(job, this.seed);
                 }
 
                 this.GetNextNonce(job);

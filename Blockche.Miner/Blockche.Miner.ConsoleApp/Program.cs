@@ -17,12 +17,12 @@ namespace Blockche.Miner.ConsoleApp
             // setup env
             // setup logger
 
-            var jobProducer = new FakeJobProducer(2000, 6);
+            var jobProducer = new FakeJobProducer(2000, 7);
             var logger = new ConsoleLogger();
 
             var tokenSource = new CancellationTokenSource();
 
-            var threads = 1;
+            var threads = 4;
             var cpuMiners = new List<CpuMiner>(threads);
             for (int i = 0; i < threads; i++)
             {

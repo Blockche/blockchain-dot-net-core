@@ -7,6 +7,6 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
     {
         event EventHandler<JobCreatedEventArgs> JobCreated;
 
-        Task SubmitJob(JobDTO job);
+        Task SubmitJob(JobDTO job, int miner);
     }
 }
