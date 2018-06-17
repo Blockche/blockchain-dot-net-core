@@ -11,28 +11,37 @@ namespace Blockche.Blockchain.Common
     {
         public static string Post(string url, object postData)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "POST";
+            try
+            {
+                var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
 
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+
+                    string json = JsonConvert.SerializeObject(postData);
+
+                    streamWriter.Write(json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                string result = null;
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    result = streamReader.ReadToEnd();
+                }
+
+                return result;
+            }
+            catch (WebException ex)
             {
 
-                string json = JsonConvert.SerializeObject(postData);
-
-                streamWriter.Write(json);
-                streamWriter.Flush();
-                streamWriter.Close();
+                throw ex;
             }
-
-            string result = null;
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                result = streamReader.ReadToEnd();
-            }
-
-            return result;
+      
         }
 
 

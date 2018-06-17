@@ -21,7 +21,16 @@ namespace Blockche.Blockchain.Common
 
         public const string NullSignaturePublicKey = "0000000000000000000000000000000000000000000000000000000000000000";
         public const string NullSignaturePrivateKey = NullSignaturePublicKey;
-      
+
+
+        public static string[] GetNullSignatureHex()
+        {
+            string[] sig = new string[2];
+            sig[0] = NullSignaturePublicKey;
+            sig[1] = NullSignaturePrivateKey;
+
+            return sig;
+        }
 
         public static BigInteger[] GetNullSignature()
         {

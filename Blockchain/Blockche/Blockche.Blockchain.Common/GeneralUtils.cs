@@ -10,5 +10,10 @@ namespace Blockche.Blockchain.Common
         {
             return DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
         }
+
+        public static string NowMinusSecondsInISO8601(int seconds)
+        {
+            return DateTime.UtcNow.AddSeconds(-1*seconds).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+        }
     }
 }

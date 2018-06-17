@@ -203,7 +203,7 @@ namespace Blockche.Blockchain.Web.Controllers
                 {
                     return BadRequest("Cannot connect to self");
                 }
-                else if (node.Peers[result.NodeId] != null)
+                else if (node.Peers.ContainsKey(result.NodeId))
                 {
                     return BadRequest("Error: already connected to peer: " + peerUrl);
                 }
@@ -215,16 +215,23 @@ namespace Blockche.Blockchain.Web.Controllers
                 {
                     // Remove all peers with the same URL + add the new peer ?????
                     //why - isn't this handled by the second check??
-                    foreach (var nodeId in node.Peers)
-                        if (node.Peers[nodeId.Key] == peerUrl)
-                            node.Peers.Remove(nodeId.Key);
+                    //foreach (var nodeId in node.Peers)
+                    //    if (node.Peers[nodeId.Key] == peerUrl)
+                    //        node.Peers.Remove(nodeId.Key);
+
+                    
+
 
 
                     node.Peers[result.NodeId] = peerUrl;
                     Console.WriteLine("Successfully connected to peer: " + peerUrl);
 
-                    // Try to connect back the remote peer to self
-                    WebRequester.Post(peerUrl + "/api/Node/peers/connect", new Peer() { NodeUrl = node.SelfUrl });
+                    if (!info.IsRecursive)
+                    {
+                        // Try to connect back the remote peer to self
+                        WebRequester.Post(peerUrl + "/api/Node/peers/connect", new Peer() { NodeUrl = node.SelfUrl, IsRecursive = true });
+                    }
+                  
 
 
                     // Synchronize the blockchain + pending transactions
