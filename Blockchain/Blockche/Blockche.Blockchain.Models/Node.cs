@@ -62,7 +62,7 @@ namespace Blockche.Blockchain.Models
                 try
                 {
                     var result = WebRequester
-                    .Post(peerUrl + "/api/transactions/send", tran);
+                    .Post(peerUrl + "/api/Node/transactions/send", tran);
                 }
                 catch (Exception ex)
                 {
@@ -94,7 +94,7 @@ namespace Blockche.Blockchain.Models
                 try
                 {
                     var result = WebRequester
-                    .Post(peerUrl + "/api/peers/notify-new-block", notification);
+                    .Post(peerUrl + "/api/Node/peers/notify-new-block", notification);
                 }
                 catch (Exception ex)
                 {
@@ -120,7 +120,7 @@ namespace Blockche.Blockchain.Models
                         " Expected chain length = {1}, expected cummulative difficulty = {2}.",
                         peerChainInfo.NodeUrl, peerChainInfo.BlocksCount, peerChainDiff);
 
-                    var blocks = JsonConvert.DeserializeObject<List<Block>>(WebRequester.Get(peerChainInfo.NodeUrl + "/api/blocks"));
+                    var blocks = JsonConvert.DeserializeObject<List<Block>>(WebRequester.Get(peerChainInfo.NodeUrl + "/api/Node/blocks"));
 
                     var chainIncreased = this.Chain.ProcessLongerChain(blocks);
                     if (chainIncreased)
@@ -146,7 +146,7 @@ namespace Blockche.Blockchain.Models
                     Console.WriteLine(
                         "Pending transactions sync started.Peer: {0}", peerChainInfo.NodeUrl);
                     var transactions = JsonConvert.DeserializeObject<List<Transaction>>(WebRequester.Get(
-                        peerChainInfo.NodeUrl + "/api/transactions/pending"));
+                        peerChainInfo.NodeUrl + "/api/Node/transactions/pending"));
 
                     foreach (var tran in transactions)
                     {

@@ -61,7 +61,7 @@ namespace Blockche.Blockchain.Web.Controllers
         }
 
 
-        // GET api/Node/Debug/Mine
+        // GET api/Node/Debug/Mine/{minerAddress}/{difficulty}
         [HttpGet]
         [Route("Debug/Mine/{minerAddress}/{difficulty}")]
         public IActionResult Reset(string minerAddress, int difficulty = 3)
@@ -72,7 +72,7 @@ namespace Blockche.Blockchain.Web.Controllers
         }
 
 
-        // GET api/blocks
+        // GET api/Node/blocks
         [HttpGet]
         [Route("Blocks")]
         public IActionResult String()
@@ -82,7 +82,7 @@ namespace Blockche.Blockchain.Web.Controllers
             return Ok(result);
         }
 
-        // GET api/blocks/{index}
+        // GET api/Node/blocks/{index}
         [HttpGet]
         [Route("Blocks/{index}")]
         public IActionResult Blocks(int index)
@@ -94,7 +94,7 @@ namespace Blockche.Blockchain.Web.Controllers
 
 
 
-        // GET api/transactions/pending
+        // GET api/Node/transactions/pending
         [HttpGet]
         [Route("transactions/pending")]
         public IActionResult PendingTransactions()
@@ -104,7 +104,7 @@ namespace Blockche.Blockchain.Web.Controllers
             return Ok(result);
         }
 
-        // GET api/transactions/confirmed
+        // GET api/Node/transactions/confirmed
         [HttpGet]
         [Route("transactions/confirmed")]
         public IActionResult ConfirmedTransactions()
@@ -114,7 +114,7 @@ namespace Blockche.Blockchain.Web.Controllers
             return Ok(result);
         }
 
-        // GET api/transactions/{tranHash}
+        // GET api/Node/transactions/{tranHash}
         [HttpGet]
         [Route("transactions/{tranHash}")]
         public IActionResult ConfirmedTransactions(string tranHash)
@@ -125,7 +125,7 @@ namespace Blockche.Blockchain.Web.Controllers
 
         }
 
-        // GET api/balances
+        // GET api/Node/balances
         [HttpGet]
         [Route("balances")]
         public IActionResult Balances()
@@ -135,7 +135,7 @@ namespace Blockche.Blockchain.Web.Controllers
 
         }
 
-        // GET api/transactions/address/{address}
+        // GET api/Node/transactions/address/{address}
         [HttpGet]
         [Route("transactions/address/{address}")]
         public IActionResult TransactionsByAddress(string address)
@@ -146,7 +146,7 @@ namespace Blockche.Blockchain.Web.Controllers
 
         }
 
-        // GET api/balance/address/{address}
+        // GET api/Node/balance/address/{address}
         [HttpGet]
         [Route("balance/address/{address}")]
         public IActionResult GetAccountBalance(string address)
@@ -157,7 +157,7 @@ namespace Blockche.Blockchain.Web.Controllers
 
         }
 
-        // POST api/transactions/send
+        // POST api/Node/transactions/send
         [HttpPost]
         [Route("transactions/send")]
         public IActionResult SendTransaction(Transaction tran)
@@ -175,7 +175,7 @@ namespace Blockche.Blockchain.Web.Controllers
             return BadRequest("TransactionDataHash value missing:");
         }
 
-        // GET api/peers
+        // GET api/Node/peers
         [HttpGet]
         [Route("peers")]
         public IActionResult Peers()
@@ -185,7 +185,7 @@ namespace Blockche.Blockchain.Web.Controllers
         }
 
 
-        // POST api/peers/connect
+        // POST api/Node/peers/connect
         [HttpPost]
         [Route("peers/connect")]
         public IActionResult ConnectoToPeer(Peer info)
@@ -198,7 +198,7 @@ namespace Blockche.Blockchain.Web.Controllers
             try
             {
                 var node = this.GetNodeSingleton();
-                var result = JsonConvert.DeserializeObject<AboutInfo>(WebRequester.Get(peerUrl + "/api/info"));
+                var result = JsonConvert.DeserializeObject<AboutInfo>(WebRequester.Get(peerUrl + "/api/Node/about"));
                 if (node.NodeId == result.NodeId)
                 {
                     return BadRequest("Cannot connect to self");
@@ -224,7 +224,7 @@ namespace Blockche.Blockchain.Web.Controllers
                     Console.WriteLine("Successfully connected to peer: " + peerUrl);
 
                     // Try to connect back the remote peer to self
-                    WebRequester.Post(peerUrl + "/api/peers/connect", new Peer() { NodeUrl = node.SelfUrl });
+                    WebRequester.Post(peerUrl + "/api/Node/peers/connect", new Peer() { NodeUrl = node.SelfUrl });
 
 
                     // Synchronize the blockchain + pending transactions
@@ -239,13 +239,13 @@ namespace Blockche.Blockchain.Web.Controllers
             {
 
                 Console.WriteLine("Error: connecting to peer: {0} failed", peerUrl);
-                return BadRequest("Cannot connect to peer: " + peerUrl);
+                return BadRequest(string.Format( "Cannot connect to peer: {0}, due to {1}", peerUrl, ex.Message));
 
             }
 
         }
 
-        // POST api/peers/notify-new-block
+        // POST api/Node/peers/notify-new-block
         [HttpPost]
         [Route("/peers/notify-new-block")]
         public IActionResult NotifyNewBlock(AboutInfo info)
@@ -255,7 +255,7 @@ namespace Blockche.Blockchain.Web.Controllers
             return Ok(new { message = "Thank you for the notification." });
         }
 
-        // GET api/mining/get-mining-job/{address}
+        // GET api/Node/mining/get-mining-job/{address}
         [HttpGet]
         [Route("mining/get-mining-job/{address}")]
         public IActionResult Peers(string address)
@@ -273,7 +273,7 @@ namespace Blockche.Blockchain.Web.Controllers
         }
 
 
-        // POST api/mining/submit-mined-block
+        // POST api/Node/mining/submit-mined-block
         [HttpPost]
         [Route("/mining/submit-mined-block")]
         public IActionResult SubmitMinedBlock(Block block)
