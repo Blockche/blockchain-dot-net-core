@@ -11,14 +11,11 @@ namespace Blockche.Wallet.Web.Controllers
         {
             return View();
         }
-
-        //Ajax
+        
         [HttpPost]
         public IActionResult GenerateAccount()
         {
-            // save to session
             var account = CryptoUtils.GenerateNewAccount();
-            this.HttpContext.Session.SetString("Address", account.Address);
 
             return this.Json(account);
         }
@@ -36,6 +33,14 @@ namespace Blockche.Wallet.Web.Controllers
             this.HttpContext.Session.SetString("Address", account.Address);
 
             return this.Json(account);
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            this.HttpContext.Session.Remove("Address");
+
+            return this.RedirectToAction("Index", "Home");
         }
     }
 }

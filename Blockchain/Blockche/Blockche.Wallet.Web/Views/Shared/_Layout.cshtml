@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,11 +31,21 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Account" asp-action="Generate">Generate new account</a></li>
                     <li><a asp-area="" asp-controller="Account" asp-action="Import">Import account</a></li>
-                    <li><a asp-area="" asp-controller="Transactions" asp-action="Index">Wallet</a></li>
+                    <li><a asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a></li>
                 </ul>
+                @if (!string.IsNullOrEmpty(Context.Session.GetString("Address")))
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a title="@Context.Session.GetString("Address")" href="/">Logged in with @Context.Session.GetString("Address")?.Replace(Context.Session.GetString("Address").Substring(10), "...")</a>
+                        </li>
+                        <li><form asp-action="Logout" asp-controller="Account" method="post">
+                            <input type="submit" name="submit" value="Logout" class="btn btn-link" style="margin-top: 7px;"/>
+                        </form></li>
+                    </ul>
+                }
             </div>
         </div>
     </nav>
