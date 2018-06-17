@@ -33,7 +33,7 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Account" asp-action="Generate">Generate new account</a></li>
                     <li><a asp-area="" asp-controller="Account" asp-action="Import">Import account</a></li>
-                    <li><a asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a></li>
+                    <li><a asp-area="" asp-controller="Transactions" asp-action="Sign">Transactions</a></li>
                 </ul>
                 @if (!string.IsNullOrEmpty(Context.Session.GetString("Address")))
                 {

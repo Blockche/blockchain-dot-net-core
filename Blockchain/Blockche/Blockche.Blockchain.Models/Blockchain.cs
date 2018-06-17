@@ -156,7 +156,7 @@ namespace Blockche.Blockchain.Models
             if (!ValidationUtils.IsValidPublicKey(tranData.SenderPubKey))
                 throw new ArgumentException("Invalid public key:" + tranData.SenderPubKey);
 
-            var senderAddr = CryptoUtils.PublicKeyToAddress(tranData.SenderPubKey);
+            var senderAddr = CryptoUtils.GetAddressFromPublicKey(tranData.SenderPubKey);
             if (senderAddr != tranData.From)
                 throw new ArgumentException("The public key should match the sender address:" + tranData.SenderPubKey);
 

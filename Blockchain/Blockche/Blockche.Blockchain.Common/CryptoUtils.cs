@@ -5,6 +5,7 @@ using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Math;
@@ -75,12 +76,12 @@ namespace Blockche.Blockchain.Common
 
         }
 
-        public static string PublicKeyToAddress(byte[] keyBytes)
+        public static string GetAddressFromPublicKey(byte[] keyBytes)
         {
             return CalcRIPEMD160(keyBytes);
         }
 
-        public static string PublicKeyToAddress(string key)
+        public static string GetAddressFromPublicKey(string key)
         {
             return CalcRIPEMD160(key);
         }
@@ -137,7 +138,7 @@ namespace Blockche.Blockchain.Common
             var privateKeyHexString = privateKey.ToString(16);
 
             var pubKey = GetPublicKeyHashFromPrivateKey(privateKeyHexString);
-            var address = PublicKeyToAddress(pubKey);
+            var address = GetAddressFromPublicKey(pubKey);
 
             return new AccountInfo { Address = address, PrivateKey = privateKeyHexString, PublicKey = pubKey };
         }
@@ -145,7 +146,7 @@ namespace Blockche.Blockchain.Common
         public static AccountInfo GetAccountInfoForPrivateKey(string privateKey)
         {
             var publicKey = GetPublicKeyHashFromPrivateKey(privateKey);
-            var address = PublicKeyToAddress(publicKey);
+            var address = GetAddressFromPublicKey(publicKey);
 
             return new AccountInfo { Address = address, PrivateKey = privateKey, PublicKey = publicKey };
         }
@@ -181,6 +182,37 @@ namespace Blockche.Blockchain.Common
             return senderPubKeyCompressed;
         }
 
+        public static BigInteger[] SignTransaction(
+            string recipientAddress,
+            int value,
+            int fee,
+            string iso8601datetime,
+            string senderPrivateKeyHex)
+        {
+            var privateKey = new BigInteger(senderPrivateKeyHex, 16);
+
+            var publicKey = GetPublicKeyHashFromPrivateKey(senderPrivateKeyHex);
+            var senderAddress = GetAddressFromPublicKey(publicKey);
+
+            // TODO Use custom class here
+            var tran = new
+            {
+                From = senderAddress,
+                To = recipientAddress,
+                PublicKey = publicKey,
+                Value = value,
+                Fee = fee,
+                CreatedOn = iso8601datetime,
+
+            };
+            var tranJson = JsonConvert.SerializeObject(tran);
+
+            var tranHash = CalcSHA256(tranJson);
+
+            var tranSignature = SignData(privateKey, tranHash);
+
+            return tranSignature;
+        }
 
         public static void SignAndVerifyTransaction(string recipientAddress, int value, int fee,
            string iso8601datetime, string senderPrivKeyHex)
