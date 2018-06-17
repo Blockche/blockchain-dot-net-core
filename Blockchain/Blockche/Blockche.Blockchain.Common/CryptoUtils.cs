@@ -13,12 +13,13 @@ using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Asn1.Sec;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto.Signers;
+using Org.BouncyCastle.Utilities.Encoders;
 
 namespace Blockche.Blockchain.Common
 {
     public class CryptoUtils
     {
-        
+
         static readonly X9ECParameters curve = SecNamedCurves.GetByName("secp256k1");
         private static readonly ECDomainParameters Domain = new ECDomainParameters(curve.Curve, curve.G, curve.N, curve.H);
 
@@ -39,13 +40,13 @@ namespace Blockche.Blockchain.Common
             byte[] bytes = new byte[NumberChars / 2];
             for (int i = 0; i < NumberChars; i += 2)
             {
-               // var len = i + 2 <= NumberChars ? 2 : 1;
+                // var len = i + 2 <= NumberChars ? 2 : 1;
                 bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
             }
             return bytes;
         }
 
-       
+
 
         public static byte[] GetBytes(string data)
         {
@@ -79,7 +80,7 @@ namespace Blockche.Blockchain.Common
             return CalcRIPEMD160(keyBytes);
         }
 
-        public static string PublicKeyToAddress( string key)
+        public static string PublicKeyToAddress(string key)
         {
             return CalcRIPEMD160(key);
         }
@@ -103,7 +104,6 @@ namespace Blockche.Blockchain.Common
             byte[] result = new byte[digest.GetDigestSize()];
             digest.DoFinal(result, 0);
             return BytesToHex(result);
-
         }
 
         public static AsymmetricCipherKeyPair GenerateRandomKeys(int keySize = 256)
@@ -123,31 +123,34 @@ namespace Blockche.Blockchain.Common
             return x.ToString(16) + Convert.ToInt32(y.TestBit(0));
         }
 
-
-        private static void RandomPrivateKeyToAddress()
+        public static BigInteger GenerateRandomPrivateKey()
         {
-            Console.WriteLine("Random private key --> public key --> address");
-            Console.WriteLine("---------------------------------------------");
-
             var keyPair = GenerateRandomKeys();
 
-            BigInteger privateKey = ((ECPrivateKeyParameters)keyPair.Private).D;
-            Console.WriteLine("Private key (hex): " + privateKey.ToString(16));
-            Console.WriteLine("Private key: " + privateKey.ToString(10));
-
-            ECPoint pubKey = ((ECPublicKeyParameters)keyPair.Public).Q;
-            Console.WriteLine("Public key: ({0}, {1})",
-                pubKey.XCoord.ToBigInteger().ToString(10),
-                pubKey.YCoord.ToBigInteger().ToString(10));
-
-            string pubKeyCompressed = EncodeECPointHexCompressed(pubKey);
-            Console.WriteLine("Public key (compressed): " + pubKeyCompressed);
-
-            string addr = CalcRIPEMD160(pubKeyCompressed);
-            Console.WriteLine("Blockchain address: " + addr);
+            return ((ECPrivateKeyParameters)keyPair.Private).D;
         }
 
-        private static void ExistingPrivateKeyToAddress(string privKeyHex)
+        public static AccountInfo GenerateNewAccount()
+        {
+            var privateKey = GenerateRandomPrivateKey();
+
+            var privateKeyHexString = privateKey.ToString(16);
+
+            var pubKey = GetPublicKeyHashFromPrivateKey(privateKeyHexString);
+            var address = PublicKeyToAddress(pubKey);
+
+            return new AccountInfo { Address = address, PrivateKey = privateKeyHexString, PublicKey = pubKey };
+        }
+
+        public static AccountInfo GetAccountInfoForPrivateKey(string privateKey)
+        {
+            var publicKey = GetPublicKeyHashFromPrivateKey(privateKey);
+            var address = PublicKeyToAddress(publicKey);
+
+            return new AccountInfo { Address = address, PrivateKey = privateKey, PublicKey = publicKey };
+        }
+
+        public static void ExistingPrivateKeyToAddress(string privKeyHex)
         {
             Console.WriteLine("Existing private key --> public key --> address");
             Console.WriteLine("-----------------------------------------------");
@@ -168,7 +171,7 @@ namespace Blockche.Blockchain.Common
             Console.WriteLine("Blockchain address: " + addr);
         }
 
-        public static string  GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
+        public static string GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
         {
             BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
 
@@ -203,7 +206,7 @@ namespace Blockche.Blockchain.Common
                 value = value,
                 fee = fee,
                 dateCreated = iso8601datetime,
-               
+
             };
             string tranJson = JsonConvert.SerializeObject(tran);
             Console.WriteLine("Transaction (JSON): {0}", tranJson);
@@ -221,7 +224,7 @@ namespace Blockche.Blockchain.Common
                 to = recipientAddress,
                 senderPubKey = senderPubKeyCompressed,
                 value = value,
-                fee=fee,
+                fee = fee,
                 dateCreated = iso8601datetime,
                 senderSignature = new string[]
                 {
@@ -253,7 +256,7 @@ namespace Blockche.Blockchain.Common
         /// </summary>
         public static BigInteger[] SignData(BigInteger privateKey, byte[] data)
         {
-            ECPrivateKeyParameters keyParameters = new ECPrivateKeyParameters(privateKey,Domain);
+            ECPrivateKeyParameters keyParameters = new ECPrivateKeyParameters(privateKey, Domain);
             IDsaKCalculator kCalculator = new HMacDsaKCalculator(new Sha256Digest());
             ECDsaSigner signer = new ECDsaSigner(kCalculator);
 
@@ -263,7 +266,7 @@ namespace Blockche.Blockchain.Common
             return signature;
         }
 
-        public static bool VerifySignature(ECPublicKeyParameters keyParameters,BigInteger[] signature,byte[] msg )
+        public static bool VerifySignature(ECPublicKeyParameters keyParameters, BigInteger[] signature, byte[] msg)
         {
             IDsaKCalculator kCalculator = new HMacDsaKCalculator(new Sha256Digest());
             ECDsaSigner signer = new ECDsaSigner(kCalculator);
