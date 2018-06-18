@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Blockche.Miner.ConsoleApp.Config;
 using Blockche.Miner.ConsoleApp.JobProducer;
 using Blockche.Miner.ConsoleApp.Logger;
 
@@ -17,14 +18,14 @@ namespace Blockche.Miner.ConsoleApp
             // setup env
             // setup logger
 
+            var config = new ConsoleArgsConfigProvider(args);
             var jobProducer = new FakeJobProducer(2000, 7);
             var logger = new ConsoleLogger();
 
             var tokenSource = new CancellationTokenSource();
-
-            var threads = 4;
-            var cpuMiners = new List<CpuMiner>(threads);
-            for (int i = 0; i < threads; i++)
+            
+            var cpuMiners = new List<CpuMiner>(config.ThreadsCount);
+            for (int i = 0; i < config.ThreadsCount; i++)
             {
                 cpuMiners.Add(new CpuMiner(jobProducer, logger, i));
             }
