@@ -15,7 +15,10 @@ Sample blockchain written on C# and using .Net Core 2.1
 - Generate exe: 
 	-dotnet publish -c Release -r win10-x64 (in the package manager console)
 
--from Tools project run :
-	-NodeInstanceRunner.StartMultipleInstances(SampleUrls)
+- from Tools project run :
+	-NodeInstanceRunner.StartMultipleInstances(SampleUrls) or 
+	1.Go the Console App Folder
+	2.Open Cmd
+	3.type in: dotnet run
 	
 	
