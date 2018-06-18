@@ -59,6 +59,7 @@ namespace Blockche.Blockchain.Web
 
 
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvc(routes =>
             {
