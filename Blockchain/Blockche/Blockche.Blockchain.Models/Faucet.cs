@@ -16,7 +16,7 @@ namespace Blockche.Blockchain.Models
         public static Transaction GetGenesisFaucetTransaction()
         {
             
-            var signature = Config.GetNullSignature();
+            var signature = Config.GetNullSignatureHex();
 
             var tran = new Transaction(
             Config.NullAddress,   // from address

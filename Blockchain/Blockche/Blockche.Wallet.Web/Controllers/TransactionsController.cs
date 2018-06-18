@@ -3,8 +3,6 @@ using System.Linq;
 using Blockche.Blockchain.Common;
 using Blockche.Wallet.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Blockche.Wallet.Web.Controllers
 {

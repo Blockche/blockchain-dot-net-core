@@ -169,8 +169,8 @@ namespace Blockche.Blockchain.Models
             if (!ValidationUtils.IsValidDate(tranData.DateCreated))
                 throw new ArgumentException("Invalid date: " + tranData.DateCreated);
 
-            if (!ValidationUtils.IsValidSignatureFormat(tranData.SenderSignature))
-                throw new ArgumentException("Invalid or missing signature. Expected signature format: BigInteger[2] " + tranData.DateCreated);
+            if (!ValidationUtils.IsValidSignatureFormat(CryptoUtils.SignatureByHex(tranData.SenderSignature)))
+                throw new ArgumentException("Invalid or missing signature. Expected signature format: BigInteger[2] " + tranData.SenderSignature);
 
 
             var tran = new Transaction(
@@ -183,7 +183,10 @@ namespace Blockche.Blockchain.Models
                 tranData.SenderPubKey,
                 null, // the transactionDataHash is auto-calculated
                 tranData.SenderSignature
+
             );
+
+            //tran.IsSignatureValid = tranData.IsSignatureValid;
 
             // Check for duplicated transactions (to avoid "replay attack")
             var tranDataHex = CryptoUtils.BytesToHex(tran.TransactionDataHash);
@@ -191,8 +194,8 @@ namespace Blockche.Blockchain.Models
                 throw new ArgumentException("Duplicated transaction: " + tranDataHex);
 
 
-            if (!tran.VerifySignature())
-                throw new ArgumentException("Invalid signature: " + tranData.SenderSignature);
+            //if (!tran.VerifySignature())
+            //    throw new ArgumentException("Invalid signature: " + tranData.SenderSignature);
 
 
             var balances = this.GetAccountBalance(tran.From);
@@ -253,7 +256,7 @@ namespace Blockche.Blockchain.Models
                 "coinbase tx",            // data (payload / comments)
                 Config.NullPubKey,        // senderPubKey
                 null,                // transactionDataHash
-                Config.GetNullSignature(),     // senderSignature
+                Config.GetNullSignatureHex(),     // senderSignature
                 nextBlockIndex,           // minedInBlockIndex
                 true
             );
@@ -304,7 +307,7 @@ namespace Blockche.Blockchain.Models
 
             // Insert the coinbase transaction, holding the block reward + tx fees
             coinbaseTransaction.CalculateDataHash();
-            clonedTransactions.Insert(0,coinbaseTransaction);
+            clonedTransactions.Insert(0, coinbaseTransaction);
 
             // Prepare the next block candidate (block template)
             var prevBlockHash = this.Blocks[this.Blocks.Count - 1].BlockHash;
@@ -341,7 +344,7 @@ namespace Blockche.Blockchain.Models
 
         }
 
-      public Block  MineNextBlock(string minerAddress,int difficulty)
+        public Block MineNextBlock(string minerAddress, int difficulty)
         {
             // Prepare the next block for mining
             var oldDifficulty = this.CurrentDifficulty;
@@ -355,7 +358,7 @@ namespace Blockche.Blockchain.Models
             do
             {
                 nextBlock.Nonce++;
-                nextBlock.CalculateBlockHash();
+                nextBlock.BlockHash = nextBlock.CalculateBlockHash();
             } while (!ValidationUtils.IsValidDifficulty(CryptoUtils.BytesToHex(nextBlock.BlockHash), difficulty));
 
             // Submit the mined block
@@ -364,13 +367,13 @@ namespace Blockche.Blockchain.Models
             return newBlock;
         }
 
-       public Block SubmitMinedBlock(byte[] blockDataHash,string dateCreated,int nonce,byte[] blockHash)
+        public Block SubmitMinedBlock(byte[] blockDataHash, string dateCreated, int nonce, byte[] blockHash)
         {
             // Find the block candidate by its data hash
             var newBlock = this.MiningJobs[CryptoUtils.BytesToHex(blockDataHash)];
             if (newBlock == null)
                 throw new ArgumentException("Block not found or already mined");
-           
+
 
             // Build the new block
             newBlock.DateCreated = dateCreated;
@@ -380,11 +383,11 @@ namespace Blockche.Blockchain.Models
             // Validate the block hash + the proof of work
             if (CryptoUtils.BytesToHex(newBlock.BlockHash) != CryptoUtils.BytesToHex(blockHash))
                 throw new ArgumentException("Block hash is incorrectly calculated");
-            
+
             if (!ValidationUtils.IsValidDifficulty(
                     CryptoUtils.BytesToHex(newBlock.BlockHash), newBlock.Difficulty))
                 throw new ArgumentException("The calculated block hash does not match the block difficulty");
-            
+
 
             newBlock = this.ExtendChain(newBlock);
 
@@ -394,16 +397,16 @@ namespace Blockche.Blockchain.Models
             return newBlock;
         }
 
-       public Block ExtendChain(Block newBlock)
+        public Block ExtendChain(Block newBlock)
         {
             if (newBlock.Index != this.Blocks.Count)
                 throw new ArgumentException("The submitted block was already mined by someone else");
-            
+
 
             var prevBlock = this.Blocks[this.Blocks.Count - 1];
             if (CryptoUtils.BytesToHex(prevBlock.BlockHash) != CryptoUtils.BytesToHex(newBlock.PrevBlockHash))
                 throw new ArgumentException("Incorrect prevBlockHash");
-            
+
 
             // The block is correct --> accept it
             this.Blocks.Add(newBlock);
@@ -413,7 +416,7 @@ namespace Blockche.Blockchain.Models
             return newBlock;
         }
 
-       public bool ProcessLongerChain(List<Block> blocks)
+        public bool ProcessLongerChain(List<Block> blocks)
         {
             // TODO: validate the chain (it should be longer, should hold valid blocks, each block should hold valid transactions, etc.
             this.Blocks = blocks;

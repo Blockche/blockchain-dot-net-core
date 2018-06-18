@@ -27,6 +27,7 @@ namespace Blockche.Blockchain.Common
         public static ECPoint GetPublicKeyFromPrivateKey(BigInteger privKey)
         {
             ECPoint pubKey = curve.G.Multiply(privKey).Normalize();
+            
             return pubKey;
         }
 
@@ -47,7 +48,23 @@ namespace Blockche.Blockchain.Common
             return bytes;
         }
 
+       public static BigInteger[] SignatureByHex(string[] sigArr)
+        {
+            BigInteger[] sig = new BigInteger[2];
+            sig[0] = new BigInteger(sigArr[0], 16);
+            sig[1] = new BigInteger(sigArr[1], 16);
 
+            return sig;
+        }
+
+        public static string[] SignatureByBigInt(BigInteger[] sigBigInt)
+        {
+            string[] sign = new string[2];
+            sign[0] = sigBigInt[0].ToString(16);
+            sign[1] = sigBigInt[1].ToString(16);
+
+            return sign;
+        }
 
         public static byte[] GetBytes(string data)
         {
@@ -151,7 +168,7 @@ namespace Blockche.Blockchain.Common
             return new AccountInfo { Address = address, PrivateKey = privateKey, PublicKey = publicKey };
         }
 
-        public static void ExistingPrivateKeyToAddress(string privKeyHex)
+        public static string PrivateKeyToAddress(string privKeyHex)
         {
             Console.WriteLine("Existing private key --> public key --> address");
             Console.WriteLine("-----------------------------------------------");
@@ -170,9 +187,15 @@ namespace Blockche.Blockchain.Common
 
             string addr = CalcRIPEMD160(pubKeyCompressed);
             Console.WriteLine("Blockchain address: " + addr);
+            return addr;
         }
 
-        public static string GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
+        private static void ExistingPrivateKeyToAddress(string privKeyHex)
+        {
+            PrivateKeyToAddress(privKeyHex);
+        }
+
+        public static string  GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
         {
             BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
 
@@ -309,10 +332,14 @@ namespace Blockche.Blockchain.Common
 
         public static bool VerifySignature(string privateKeyHex, BigInteger[] signature, byte[] msg)
         {
-            ECPublicKeyParameters exPubKey = ToPublicKey(privateKeyHex);
+            ECPublicKeyParameters exPubKey =   ToPublicKey(privateKeyHex);
             bool isVerified = VerifySignature(exPubKey, signature, msg);
             return isVerified;
         }
+
+        
+
+       
 
 
     }

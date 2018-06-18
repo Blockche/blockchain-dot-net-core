@@ -16,9 +16,9 @@ namespace Blockche.Blockchain.Models
                            string dateCreated,
                            string data,
                            string senderPubKey,
-                           byte[] transactionDataHash,
-                           BigInteger[] senderSignature,
-                           int? minedInBlockIndex =null,
+                           byte[] transactionDataHash = null,
+                           string[] senderSignature = null,
+                           int? minedInBlockIndex = null,
                            bool transferSuccessful = false)
         {
             this.From = from;
@@ -35,7 +35,7 @@ namespace Blockche.Blockchain.Models
             }
 
             this.SenderSignature = senderSignature;
-           
+
             this.MinedInBlockIndex = minedInBlockIndex;
             this.TransferSuccessful = transferSuccessful;
         }
@@ -68,21 +68,22 @@ namespace Blockche.Blockchain.Models
         public string Data { get; set; }// Optional data (e.g. payload or comments): string
         public string SenderPubKey { get; set; } // 65 hex digits || byte[]
         public byte[] TransactionDataHash { get; set; }// 64 hex digits || byte[]
-        public BigInteger[] SenderSignature { get; set; } // hex_number[2][64]
+        public string[] SenderSignature { get; set; } // hex_number[2][64]
         public int? MinedInBlockIndex { get; set; } // integer
         public bool TransferSuccessful { get; set; } // bool
 
-        public bool IsSignatureValid { get;private set; } // bool
+        public bool IsSignatureValid { get; private set; } // bool
 
         public void SetSignature(string senderPrivKeyHex)
         {
             //get private key as hex
             BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
 
-            this.SenderSignature = CryptoUtils.SignData(privateKey, this.TransactionDataHash);
+            var sign = CryptoUtils.SignData(privateKey, this.TransactionDataHash);
+            this.SenderSignature = CryptoUtils.SignatureByBigInt(sign);
 
             this.IsSignatureValid = CryptoUtils
-                .VerifySignature(senderPrivKeyHex, this.SenderSignature, this.TransactionDataHash);
+                .VerifySignature(senderPrivKeyHex, sign, this.TransactionDataHash);
         }
 
         /// <summary>
@@ -92,11 +93,11 @@ namespace Blockche.Blockchain.Models
         public bool VerifySignature()
         {
             return this.IsSignatureValid;
-           
+
         }
 
 
-      
+
 
     }
 }
