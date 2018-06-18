@@ -3,9 +3,7 @@ using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Security;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Math;
@@ -14,7 +12,6 @@ using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Asn1.Sec;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Utilities.Encoders;
 
 namespace Blockche.Blockchain.Common
 {
@@ -27,7 +24,7 @@ namespace Blockche.Blockchain.Common
         public static ECPoint GetPublicKeyFromPrivateKey(BigInteger privKey)
         {
             ECPoint pubKey = curve.G.Multiply(privKey).Normalize();
-            
+
             return pubKey;
         }
 
@@ -48,7 +45,7 @@ namespace Blockche.Blockchain.Common
             return bytes;
         }
 
-       public static BigInteger[] SignatureByHex(string[] sigArr)
+        public static BigInteger[] SignatureByHex(string[] sigArr)
         {
             BigInteger[] sig = new BigInteger[2];
             sig[0] = new BigInteger(sigArr[0], 16);
@@ -195,7 +192,7 @@ namespace Blockche.Blockchain.Common
             PrivateKeyToAddress(privKeyHex);
         }
 
-        public static string  GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
+        public static string GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
         {
             BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
 
@@ -336,11 +333,5 @@ namespace Blockche.Blockchain.Common
             bool isVerified = VerifySignature(exPubKey, signature, msg);
             return isVerified;
         }
-
-        
-
-       
-
-
     }
 }

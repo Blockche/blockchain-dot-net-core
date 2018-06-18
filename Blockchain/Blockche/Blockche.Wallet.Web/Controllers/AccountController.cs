@@ -31,6 +31,7 @@ namespace Blockche.Wallet.Web.Controllers
         {
             var account = CryptoUtils.GetAccountInfoForPrivateKey(pk);
             this.HttpContext.Session.SetString("Address", account.Address);
+            this.HttpContext.Session.SetString("PrivateKey", account.PrivateKey);
 
             return this.Json(account);
         }
@@ -39,6 +40,7 @@ namespace Blockche.Wallet.Web.Controllers
         public IActionResult Logout()
         {
             this.HttpContext.Session.Remove("Address");
+            this.HttpContext.Session.Remove("PrivateKey");
 
             return this.RedirectToAction("Index", "Home");
         }

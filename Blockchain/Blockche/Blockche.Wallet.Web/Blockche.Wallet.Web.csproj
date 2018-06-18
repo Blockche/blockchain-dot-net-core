@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Blockche.Blockchain.Common\Blockche.Blockchain.Common.csproj" />
+    <ProjectReference Include="..\Blockche.Blockchain.Models\Blockche.Blockchain.Models.csproj" />
   </ItemGroup>
 
 </Project>
