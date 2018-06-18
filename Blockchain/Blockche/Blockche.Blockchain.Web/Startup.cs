@@ -59,7 +59,13 @@ namespace Blockche.Blockchain.Web
 
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseStaticFiles();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Explorer}/{action=Index}/{id?}");
+            });
         }
     }
 }

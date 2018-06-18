@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Blockche.Blockchain.Web.Controllers
 {
   
-    public abstract class BaseController : ControllerBase
+    public abstract class BaseController : Controller
     {
         protected Node GetNodeSingleton()
         {
