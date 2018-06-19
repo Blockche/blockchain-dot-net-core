@@ -162,13 +162,13 @@ namespace Blockche.Blockchain.Web.Controllers
         [Route("transactions/send")]
         public IActionResult SendTransaction(Transaction tran)
         {
-
+            var validatedTran = this.GetNodeSingleton().Chain.AddNewTransaction(tran);
             if (tran.TransactionDataHash != null)
             {
                 // Added a new pending transaction --> broadcast it to all known peers
-                this.GetNodeSingleton().BroadcastTransactionToAllPeers(tran);
+                this.GetNodeSingleton().BroadcastTransactionToAllPeers(validatedTran);
 
-                return Ok(new { transactionDataHash = tran.TransactionDataHash });
+                return Ok(new { transactionDataHash = validatedTran.TransactionDataHash });
 
             }
 

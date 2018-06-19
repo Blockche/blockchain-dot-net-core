@@ -194,14 +194,16 @@ namespace Blockche.Blockchain.Models
                 throw new ArgumentException("Duplicated transaction: " + tranDataHex);
 
 
-            //if (!tran.VerifySignature())
-            //    throw new ArgumentException("Invalid signature: " + tranData.SenderSignature);
+            if (!CryptoUtils.VerifySignature(CryptoUtils.SignatureByHex(tran.SenderSignature), tran.TransactionDataHash))
+                throw new ArgumentException("Invalid signature: " + tranData.SenderSignature);
 
 
             var balances = this.GetAccountBalance(tran.From);
             if (balances.ConfirmedBalance < tran.Value + tran.Fee)
                 throw new ArgumentException("Unsufficient sender balance at address:  " + tran.From);
 
+            //if (this.PendingTransactions.Any(s => CryptoUtils.BytesToHex(s.TransactionDataHash) == CryptoUtils.BytesToHex(tran.TransactionDataHash)))
+            //    throw new ArgumentException("Trying to add duplicate transaction:  " + CryptoUtils.BytesToHex(tran.TransactionDataHash));
 
             this.PendingTransactions.Add(tran);
             Console.WriteLine("Added pending transaction: " + JsonConvert.SerializeObject(tran));

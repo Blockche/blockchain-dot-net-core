@@ -310,6 +310,16 @@ namespace Blockche.Blockchain.Common
         }
 
 
+        public static bool VerifySignature(BigInteger[] signature, byte[] hash)
+        {
+            var ecPoint = CryptoUtils.RecoverPubKeyFromSIgnatureAndHash(
+                 signature,
+                 hash);
+
+            var isTransactionValid = CryptoUtils.VerifySignature(ecPoint, signature, hash);
+            return isTransactionValid;
+        }
+
         /// <summary>
         /// 
         /// </summary>

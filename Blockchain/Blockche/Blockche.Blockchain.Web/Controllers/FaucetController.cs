@@ -19,7 +19,7 @@ namespace Blockche.Blockchain.Web.Controllers
             return View(newFacelModel);
         }
 
-        [HttpPost]
+        
         public IActionResult RequestNoCoins(FaucetRequestViewModel model)
         {
             if (!ModelState.IsValid)
@@ -56,7 +56,10 @@ namespace Blockche.Blockchain.Web.Controllers
 
                 faucetTran.SetSignature(Faucet.FaucetPrivateKey);
 
-                this.GetNodeSingleton().Chain.AddNewTransaction(faucetTran);
+                //posting the Faucet tran to other controller, where the tran is added and broadcasted
+                WebRequester.Post(this.GetSelfUrl() + "/api/Node/transactions/send", faucetTran);
+
+               // this.GetNodeSingleton().Chain.AddNewTransaction(faucetTran);
                 //TODO:think about if I should mine the tran or not??
 
                 //this.GetNodeSingleton().Chain.MineNextBlock(Seeder.MinerAddress, 1);
