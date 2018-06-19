@@ -56,7 +56,7 @@ namespace Blockche.Blockchain.Web.Controllers
         public IActionResult Reset()
         {
 
-            var data = this.GetNodeSingleton().Chain = new Models.Blockchain(Faucet.GetGenesisBlock(), Config.StartDifficulty);
+            var data = this.GetNodeSingleton().Chain = new Blockche.Blockchain.Models.Blockchain(Faucet.GetGenesisBlock(), Config.StartDifficulty);
             return Ok(new { message = "The chain was reset to its genesis block" });
         }
 

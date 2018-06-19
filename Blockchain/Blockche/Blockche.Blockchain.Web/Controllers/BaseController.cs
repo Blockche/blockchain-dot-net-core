@@ -20,7 +20,7 @@ namespace Blockche.Blockchain.Web.Controllers
             int port = url.Port ?? (Request.Scheme.ToLowerInvariant().Contains("https") ? 443 : 80);  // if it doesn't has port, check if it's https (443) or not (80)
 
             var node = Node.GetInstance(host, port.ToString(),
-                new Models.Blockchain(Faucet.GetGenesisBlock(), Config.StartDifficulty));
+                new Blockche.Blockchain.Models.Blockchain(Faucet.GetGenesisBlock(), Config.StartDifficulty));
             return node;
         }
     }
