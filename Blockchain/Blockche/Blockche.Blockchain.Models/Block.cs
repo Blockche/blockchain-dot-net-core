@@ -15,7 +15,7 @@ namespace Blockche.Blockchain.Models
                     byte[] prevBlockHash,
                     string minedBy,
                     byte[] blockDataHash=null,
-                    int nonce = 0, 
+                    ulong nonce = 0, 
                     string dateCreated = null,
                     byte[] blockHash = null)
         {
@@ -83,7 +83,7 @@ namespace Blockche.Blockchain.Models
         public byte[] PrevBlockHash { get; set; } // hex_number[64] || byte[32]
         public string MinedBy { get; set; } // address (40 hex digits)
         public byte[] BlockDataHash { get; set; } // address (40 hex digits)
-        public int Nonce { get; set; }  // integer
+        public ulong Nonce { get; set; }  // integer
         public string DateCreated { get; set; } // ISO8601_string
         public byte[] BlockHash { get; set; } // hex_number[64] || byte[]
     }

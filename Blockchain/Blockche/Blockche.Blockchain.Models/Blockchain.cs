@@ -367,7 +367,7 @@ namespace Blockche.Blockchain.Models
             return newBlock;
         }
 
-        public Block SubmitMinedBlock(byte[] blockDataHash, string dateCreated, int nonce, byte[] blockHash)
+        public Block SubmitMinedBlock(byte[] blockDataHash, string dateCreated, ulong nonce, byte[] blockHash)
         {
             // Find the block candidate by its data hash
             var newBlock = this.MiningJobs[CryptoUtils.BytesToHex(blockDataHash)];

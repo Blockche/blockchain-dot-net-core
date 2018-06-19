@@ -265,10 +265,11 @@ namespace Blockche.Blockchain.Web.Controllers
         // GET api/Node/mining/get-mining-job/{address}
         [HttpGet]
         [Route("mining/get-mining-job/{address}")]
-        public IActionResult Peers(string address)
+        public IActionResult GetMiningJob(string address)
         {
             var blockCandidate = this.GetNodeSingleton().Chain.GetMiningJob(address);
-         
+
+         //retun candidate block
             return Ok(new {
                 index= blockCandidate.Index,
                 transactionsIncluded= blockCandidate.Transactions.Count,
