@@ -13,6 +13,12 @@ namespace Blockche.Blockchain.Web.Controllers
 {
     public class FaucetController : BaseController
     {
+        private AppData appData;
+        public FaucetController(AppData appData)
+        {
+            this.appData = appData;
+        }
+
         public IActionResult Index()
         {
             var newFacelModel = new FaucetRequestViewModel();
@@ -29,10 +35,30 @@ namespace Blockche.Blockchain.Web.Controllers
 
             bool isValid = true;
             string msg = "You successfully requested 1000 NoCoins";
-            if (HttpContext.Items.ContainsKey(model.Address))
+
+            var daylyReuestCountKey = model.Address + "->" + DateTime.UtcNow.ToShortDateString();
+
+            if (appData.FaucetDaylyRequestsCount.ContainsKey(daylyReuestCountKey))
             {
-                DateTime lastRequestTime = (DateTime)HttpContext.Items[model.Address];
-                if (lastRequestTime.AddMinutes(1) > DateTime.Now)
+                var dailyAddressReq = appData.FaucetDaylyRequestsCount[daylyReuestCountKey];
+                if (dailyAddressReq >= Config.FaucetDailyAddressRequestCountMax)
+                {
+                    isValid = false;
+                    msg = string.Format("You are not able to recieve more than {0} NoCoins requests per day, per address!"
+                        , Config.FaucetDailyAddressRequestCountMax);
+                }
+
+            }
+            else
+            {
+                appData.FaucetDaylyRequestsCount[daylyReuestCountKey] = 0;
+            }
+
+
+            if (isValid && appData.FaucetRequests.ContainsKey(model.Address))
+            {
+                DateTime lastRequestTime = appData.FaucetRequests[model.Address];
+                if (lastRequestTime.AddMinutes(Config.FaucetWaitMinutes) > DateTime.Now)
                 {
                     isValid = false;
                     msg = "You should wait a bit more to request more NoCoins!";
@@ -40,10 +66,13 @@ namespace Blockche.Blockchain.Web.Controllers
 
             }
 
-            HttpContext.Items[model.Address] = DateTime.Now;
+            
 
             if (isValid)
             {
+                appData.FaucetDaylyRequestsCount[daylyReuestCountKey]++;
+                appData.FaucetRequests[model.Address] = DateTime.Now;
+
                 var faucetTran = new Transaction(
                   Faucet.FaucetAddress,     // from address
                   model.Address,             // to address
