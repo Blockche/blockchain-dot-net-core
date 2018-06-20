@@ -33,7 +33,7 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Account" asp-action="Generate">Generate new account</a></li>
                     <li><a asp-area="" asp-controller="Account" asp-action="Import">Import account</a></li>
-                    <li><a asp-area="" asp-controller="Transactions" asp-action="Sign">Transactions</a></li>
+                    <li><a asp-area="" asp-controller="Transactions" asp-action="Send">Send Transaction</a></li>
                 </ul>
                 @if (!string.IsNullOrEmpty(Context.Session.GetString("Address")))
                 {
@@ -41,9 +41,11 @@
                         <li>
                             <a title="@Context.Session.GetString("Address")" href="/">Logged in with @Context.Session.GetString("Address")?.Replace(Context.Session.GetString("Address").Substring(10), "...")</a>
                         </li>
-                        <li><form asp-action="Logout" asp-controller="Account" method="post">
-                            <input type="submit" name="submit" value="Logout" class="btn btn-link" style="margin-top: 7px;"/>
-                        </form></li>
+                        <li>
+                            <form asp-action="Logout" asp-controller="Account" method="post">
+                                <input type="submit" name="submit" value="Logout" class="btn btn-link" style="margin-top: 7px;" />
+                            </form>
+                        </li>
                     </ul>
                 }
             </div>

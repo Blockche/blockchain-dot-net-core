@@ -1,4 +1,8 @@
-﻿using Blockche.Wallet.Web.Pages;
+﻿using System;
+using Blockche.Wallet.Web.Pages;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Math.EC;
 
 namespace Blockche.Wallet.Web.Controllers
 {

@@ -202,24 +202,20 @@ namespace Blockche.Blockchain.Common
             return senderPubKeyCompressed;
         }
 
-        public static BigInteger[] SignTransaction(
+        public static byte[] GetTransactionHash(
             string recipientAddress,
             int value,
             int fee,
             string iso8601datetime,
-            string senderPrivateKeyHex)
+            string senderAddress,
+            string senderPublicKey)
         {
-            var privateKey = new BigInteger(senderPrivateKeyHex, 16);
-
-            var publicKey = GetPublicKeyHashFromPrivateKey(senderPrivateKeyHex);
-            var senderAddress = GetAddressFromPublicKey(publicKey);
-
             // TODO Use custom class here
             var tran = new
             {
                 From = senderAddress,
                 To = recipientAddress,
-                PublicKey = publicKey,
+                PublicKey = senderPublicKey,
                 Value = value,
                 Fee = fee,
                 CreatedOn = iso8601datetime,
@@ -229,7 +225,16 @@ namespace Blockche.Blockchain.Common
 
             var tranHash = CalcSHA256(tranJson);
 
-            var tranSignature = SignData(privateKey, tranHash);
+            return tranHash;
+        }
+
+        public static BigInteger[] SignTransaction(
+            byte[] transactionHash,
+            string senderPrivateKeyHex)
+        {
+            var privateKey = new BigInteger(senderPrivateKeyHex, 16);
+            
+            var tranSignature = SignData(privateKey, transactionHash);
 
             return tranSignature;
         }
