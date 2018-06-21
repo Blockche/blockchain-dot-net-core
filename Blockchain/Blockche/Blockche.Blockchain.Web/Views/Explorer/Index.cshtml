@@ -10,55 +10,46 @@
 
        
 
-         
-
-            $('.btn-filter').on('click', function () {
-                var $target = $(this).data('target');
-                if ($target != 'all') {
-                    $('.table tr').css('display', 'none');
-                    $('.table tr[data-status="' + $target + '"]').fadeIn('slow');
-                } else {
-                    $('.table tr').css('display', 'none').fadeIn('slow');
-                }
-            });
-
-
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/explorer/data")
                 .build();
 
             connection.on("ReceiveMessage", (data) => {
 
-                //$("#signalRTest").text(JSON.stringify(data));
-                var html = ""
+
+                var blocksCon = $("#last-blocks");
+                var confTranCon = $("#conf-tran");
+                var pendTranCon = $("#pend-tran");
+                var peersCon = $("#peers");
+                var allCon = $("#all-things");
 
 
-                var selectedKind = $('tr.selected').data("status");
+                var peersHtml = "";
 
                 for (var property in data.peers) {
                     if (data.peers.hasOwnProperty(property)) {
 
-                        html += "<tr data-status='peers'> \
-<td> \
-<div class='media'> \
+                        peersHtml += 
+"<div class='media'> \
 <div class='media-body'>\
 <span class='media-meta pull-right'></span>\
 <h4 class='title'>" + data.peers[property] +
-"<span class='pull-right pagado'>" + property+"</span>\
+                            "<span class='pull-right pagado'>" + property + "</span>\
 </h4>\
 <p class='summary'></p>\
 </div>\
-</div>\
-</td >\
-</tr >" ;
+</div>";
 
                     }
                 }
 
+                peersCon.html(peersHtml);
+
+                var blocksHtml = "";
+
                 for (var i = 0; i < data.blocks.length; i++) {
-                    html += "<tr data-status='last-block'> \
-<td> \
-<div class='media'> \
+                    blocksHtml += 
+"<div class='media'> \
 <div class='media-body'>\
 <span class='media-meta pull-right'></span>\
 <h4 class='title'> Block number: " + data.blocks[i].index +
@@ -66,15 +57,17 @@
 </h4>\
 <p class='summary'>" + data.blocks[i].blockDataHash + "</p>\
 </div>\
-</div>\
-</td >\
-</tr >" ;
+</div>";
                 }
 
+                blocksCon.html(blocksHtml);
+
+                var pendTranHtml = "";
+
                 for (var i = 0; i < data.pendingTransactions.length; i++) {
-                    html += "<tr data-status='pend-tran'> \
-<td> \
-<div class='media'> \
+                    pendTranHtml += 
+
+"<div class='media'> \
 <div class='media-body'>\
 <span class='media-meta pull-right'></span>\
 <h4 class='title'> Transaction value: " + data.pendingTransactions[i].value +
@@ -82,15 +75,19 @@
 </h4>\
 <p class='summary'>" + data.pendingTransactions[i].from + " - " + data.pendingTransactions[i].to + "</p>\
 </div>\
-</div>\
-</td >\
-</tr >" ;
+</div>"
+
+
                 }
 
+                pendTranCon.html(pendTranHtml);
+
+                var confTranHtml = "";
+
                 for (var i = 0; i < data.confirmedTran.length; i++) {
-                    html += "<tr data-status='conf-tran'> \
-<td> \
-<div class='media'> \
+                    confTranHtml +=
+
+                        "<div class='media'> \
 <div class='media-body'>\
 <span class='media-meta pull-right'></span>\
 <h4 class='title'> Transaction value: " + data.confirmedTran[i].value +
@@ -98,17 +95,13 @@
 </h4>\
 <p class='summary'>" + data.confirmedTran[i].from + " - " + data.confirmedTran[i].to + "</p>\
 </div>\
-</div>\
-</td >\
-</tr >" ;
+</div>";
+
                 }
 
+                confTranCon.html(confTranHtml);
 
-
-                $("#chain-table tbody").html(html);
-
-                $('tr[data-status=' + selectedKind + ']').addClass("selected");
-                $('.btn-filter[data-target=' + selectedKind + ']').click();
+                allCon.html(blocksHtml + confTranHtml + pendTranHtml + peersHtml);
 
             });
 
@@ -134,161 +127,72 @@
     </script>
 }
 
-<div id="signalRTest">
-
-</div>
-
-<div class="container">
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-
-            Message...<input type="text" id="messageInput" />
-            <input type="button" id="sendButton" value="Send Message" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <hr />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            <ul id="messagesList"></ul>
-        </div>
-    </div>
-</div>
 
 <div class="container">
     <div class="row">
         <section class="content">
-            <h1>NoCoin Explorer of Top 10 entities</h1>
+            <div class="well well-lg">    <h2>NoCoin Explorer of Top 10 entities</h2></div>
+        
 
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="pull-right">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-success btn-filter" data-target="last-block">Last blocks</button>
-                                <button type="button" class="btn btn-warning btn-filter" data-target="conf-tran">Transactions</button>
-                                <button type="button" class="btn btn-danger btn-filter" data-target="pend-tran">Pending Transactions</button>
-                                <button type="button" class="btn btn-default btn-filter" data-target="peers">Peers</button>
-                                <button type="button" class="btn btn-info btn-filter" data-target="all">All</button>
-                            </div>
-                        </div>
-                        <div class="table-container">
-                            <table class="table table-filter" id="chain-table">
-                                <tbody>
-                                    <tr data-status="peers">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#last-blocks">Last blocks</a></li>
+                <li><a data-toggle="tab" href="#conf-tran">Transactions</a></li>
+                <li><a data-toggle="tab" href="#pend-tran">Pending Transactions</a></li>
+                <li><a data-toggle="tab" href="#peers">Peers</a></li>
+                <li><a data-toggle="tab" href="#all-things">All</a></li>
+            </ul>
 
-                                        <td>
-                                            <div class="media">
-
-                                                <div class="media-body">
-                                                    <span class="media-meta pull-right">Febrero 13, 2016</span>
-                                                    <h4 class="title">
-                                                        Lorem Impsum
-                                                        <span class="pull-right pagado">(Pagado)</span>
-                                                    </h4>
-                                                    <p class="summary">Ut enim ad minim veniam, quis nostrud exercitation...</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-status="pend-tran">
-
-                                        <td>
-                                            <div class="media">
-
-                                                <div class="media-body">
-                                                    <span class="media-meta pull-right">Febrero 13, 2016</span>
-                                                    <h4 class="title">
-                                                        Lorem Impsum
-                                                        <span class="pull-right pagado">(Pagado)</span>
-                                                    </h4>
-                                                    <p class="summary">Ut enim ad minim veniam, quis nostrud exercitation...</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-status="conf-tran">
-
-                                        <td>
-                                            <div class="media">
-
-                                                <div class="media-body">
-                                                    <span class="media-meta pull-right">Febrero 13, 2016</span>
-                                                    <h4 class="title">
-                                                        Lorem Impsum
-                                                        <span class="pull-right pendiente">(Pendiente)</span>
-                                                    </h4>
-                                                    <p class="summary">Ut enim ad minim veniam, quis nostrud exercitation...</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-status="last-block">
-
-                                        <td>
-                                            <div class="media">
-
-                                                <div class="media-body">
-                                                    <span class="media-meta pull-right">Febrero 13, 2016</span>
-                                                    <h4 class="title">
-                                                        Lorem Impsum
-                                                        <span class="pull-right cancelado">(Cancelado)</span>
-                                                    </h4>
-                                                    <p class="summary">Ut enim ad minim veniam, quis nostrud exercitation...</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-status="conf-tran" class="selected">
-
-                                        <td>
-                                            <div class="media">
-
-                                                <div class="media-body">
-                                                    <span class="media-meta pull-right">Febrero 13, 2016</span>
-                                                    <h4 class="title">
-                                                        Lorem Impsum
-                                                        <span class="pull-right pagado">(Pagado)</span>
-                                                    </h4>
-                                                    <p class="summary">Ut enim ad minim veniam, quis nostrud exercitation...</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-status="conf-tran">
-
-                                        <td>
-                                            <div class="media">
-
-                                                <div class="media-body">
-                                                    <span class="media-meta pull-right">Febrero 13, 2016</span>
-                                                    <h4 class="title">
-                                                        Lorem Impsum
-                                                        <span class="pull-right pendiente">(Pendiente)</span>
-                                                    </h4>
-                                                    <p class="summary">Ut enim ad minim veniam, quis nostrud exercitation...</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+            <div class="tab-content">
+                <div id="last-blocks" class="tab-pane fade in active">
+                    <h3>blocks</h3>
+                    <p>Some content.</p>
                 </div>
-                <div class="content-footer">
-                    <p>
-
-
-                    </p>
+                <div id="conf-tran" class="tab-pane fade">
+                    <h3>conf</h3>
+                    <p>Some content in menu 1.</p>
+                </div>
+                <div id="pend-tran" class="tab-pane fade">
+                    <h3>pend</h3>
+                    <p>Some content in menu 2.</p>
+                </div>
+                <div id="peers" class="tab-pane fade">
+                    <h3>Peers</h3>
+                    <p>Some content in menu 2.</p>
+                </div>
+                <div id="all-things" class="tab-pane fade">
+                    <h3>All</h3>
+                    <p>Some content in menu 2.</p>
                 </div>
             </div>
+
+            @*<div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success btn-filter" data-target="last-block">Last blocks</button>
+                            <button type="button" class="btn btn-warning btn-filter" data-target="conf-tran">Transactions</button>
+                            <button type="button" class="btn btn-danger btn-filter" data-target="pend-tran">Pending Transactions</button>
+                            <button type="button" class="btn btn-default btn-filter" data-target="peers">Peers</button>
+                            <button type="button" class="btn btn-info btn-filter" data-target="all">All</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="table table-filter" id="chain-table">
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="content-footer">
+                <p>
+
+
+                </p>
+            </div>
+        </div>*@
         </section>
 
     </div>
