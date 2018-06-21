@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blockche.Blockchain.Common;
 using Blockche.Blockchain.Models;
+using Blockche.Blockchain.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -284,7 +285,7 @@ namespace Blockche.Blockchain.Web.Controllers
         // POST api/Node/mining/submit-mined-block
         [HttpPost]
         [Route("/mining/submit-mined-block")]
-        public IActionResult SubmitMinedBlock(Block block)
+        public IActionResult SubmitMinedBlock(SubmitMinedBlockRequestModel block)
         {
             //let blockDataHash = req.body.blockDataHash;
             //let dateCreated = req.body.dateCreated;
@@ -293,7 +294,7 @@ namespace Blockche.Blockchain.Web.Controllers
             try
             {
                 var result = this.GetNodeSingleton().Chain.SubmitMinedBlock(
-                block.BlockDataHash, block.DateCreated, block.Nonce, block.BlockHash);
+                    CryptoUtils.HexToBytes(block.BlockDataHash), block.DateCreated, block.Nonce, CryptoUtils.HexToBytes(block.BlockHash));
                 this.GetNodeSingleton().NotifyPeersAboutNewBlock();
 
                 return Ok(new { 
