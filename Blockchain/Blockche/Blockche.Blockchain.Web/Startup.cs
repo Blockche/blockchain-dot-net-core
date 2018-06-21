@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blockche.Blockchain.Web.Hubs;
 using Blockche.Blockchain.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,7 @@ namespace Blockche.Blockchain.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSingleton<AppData>();
+            services.AddSignalR();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -60,10 +62,17 @@ namespace Blockche.Blockchain.Web
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ExplorerHub>("/explorer/data");
+            });
+
 
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            //app.UseCors("CorsPolicy");
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

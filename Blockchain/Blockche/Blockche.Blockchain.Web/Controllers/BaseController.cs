@@ -12,15 +12,15 @@ namespace Blockche.Blockchain.Web.Controllers
   
     public abstract class BaseController : Controller
     {
-        protected string GetSelfUrl()
-        {
+        //protected string GetSelfUrl()
+        //{
 
-            var host = Request.Host.Host;
-            //TODO: Think about it
-            int port = Request.Host.Port ?? (Request.Scheme.ToLowerInvariant().Contains("https") ? 443 : 80);
-            var selfUrl = string.Format("http://{0}:{1}", host, port);
-            return selfUrl;
-        }
+        //    var host = Request.Host.Host;
+        //    //TODO: Think about it
+        //    int port = Request.Host.Port ?? (Request.Scheme.ToLowerInvariant().Contains("https") ? 443 : 80);
+        //    var selfUrl = string.Format("http://{0}:{1}", host, port);
+        //    return selfUrl;
+        //}
 
         protected Node GetNodeSingleton()
         {

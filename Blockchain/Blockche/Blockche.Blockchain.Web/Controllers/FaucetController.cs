@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Blockche.Blockchain.Common;
 using Blockche.Blockchain.Models;
 using Blockche.Blockchain.Tests.Seed;
+using Blockche.Blockchain.Web.Infrastructure;
 using Blockche.Blockchain.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -86,7 +87,7 @@ namespace Blockche.Blockchain.Web.Controllers
                 faucetTran.SetSignature(Faucet.FaucetPrivateKey);
 
                 //posting the Faucet tran to other controller, where the tran is added and broadcasted
-                WebRequester.Post(this.GetSelfUrl() + "/api/Node/transactions/send", faucetTran);
+                WebRequester.Post(Helper.GetSelfUrl(Request) + "/api/Node/transactions/send", faucetTran);
 
                // this.GetNodeSingleton().Chain.AddNewTransaction(faucetTran);
                 //TODO:think about if I should mine the tran or not??
