@@ -15,7 +15,7 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
         private readonly string minerAddress;
         private readonly IEnumerable<string> nodeUrls;
         private readonly Timer timer;
-        private const int TimerInterval = 5000;
+        private const int TimerInterval = 1000 * 5;
 
         private string lastJob;
 
@@ -61,7 +61,7 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
 
             foreach (var nodeUrl in this.nodeUrls)
             {
-                var fullUrl = $"{nodeUrl}/mining/submit-mined-block";
+                var fullUrl = $"{nodeUrl}/api/node/mining/submit-mined-block";
                 var response = await this.http.PostAsync(fullUrl, payload);
                 if (response.IsSuccessStatusCode)
                 {
@@ -71,7 +71,7 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
                 }
             }
         }
-
+        
         private void NotifyNewJob(JobDTO newJob)
         {
             if (newJob == null)
@@ -86,13 +86,13 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
             }
 
             this.lastJob = serializedNewJob;
-            this.JobCreated.Invoke(this, new JobCreatedEventArgs { Job = newJob });
+            this.JobCreated?.Invoke(this, new JobCreatedEventArgs { Job = newJob });
         }
 
         private async Task<JobDTO> GetJob(string nodeUrl)
         {
             // Get the next mining job to invoke event
-            var newJobResponse = await this.http.GetAsync($"{nodeUrl}/mining/get-mining-job/{this.minerAddress}");
+            var newJobResponse = await this.http.GetAsync($"{nodeUrl}/api/node/mining/get-mining-job/{this.minerAddress}");
             if (newJobResponse.IsSuccessStatusCode)
             {
                 var content = await newJobResponse.Content.ReadAsStringAsync();

@@ -45,7 +45,7 @@ namespace Blockche.Blockchain.Models
 
         public byte[] CalculateBlockHash()
         {
-            var data =string.Format("{0}|{1}|{2}", this.BlockDataHash,  this.DateCreated, this.Nonce);
+            var data =string.Format("{0}|{1}|{2}", CryptoUtils.BytesToHex(this.BlockDataHash),  this.DateCreated, this.Nonce);
             return CryptoUtils.CalcSHA256(data);
         }
 

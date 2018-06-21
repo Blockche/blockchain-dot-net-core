@@ -284,8 +284,8 @@ namespace Blockche.Blockchain.Web.Controllers
 
         // POST api/Node/mining/submit-mined-block
         [HttpPost]
-        [Route("/mining/submit-mined-block")]
-        public IActionResult SubmitMinedBlock(SubmitMinedBlockRequestModel block)
+        [Route("mining/submit-mined-block")]
+        public IActionResult SubmitMinedBlock([FromBody]SubmitMinedBlockRequestModel block)
         {
             //let blockDataHash = req.body.blockDataHash;
             //let dateCreated = req.body.dateCreated;

@@ -45,8 +45,7 @@ namespace Blockche.Miner.ConsoleApp
 
             try
             {
-                Task.WaitAll(cpuMiners.Select(m => Task.Factory.StartNew(
-                    () => m.Start(), cancellationTokenSource.Token)).ToArray());
+                Parallel.ForEach(cpuMiners, miner => miner.Start());
             }
             catch (AggregateException e)
             {
@@ -54,9 +53,7 @@ namespace Blockche.Miner.ConsoleApp
                 {
                     Console.WriteLine(ex);
                 }
-            }
-            finally
-            {
+
                 cancellationTokenSource.Dispose();
             }
 

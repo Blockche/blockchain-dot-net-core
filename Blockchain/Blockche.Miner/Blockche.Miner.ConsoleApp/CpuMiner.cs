@@ -48,14 +48,16 @@ namespace Blockche.Miner.ConsoleApp
 
         private void JobCreatedHandler(object sender, JobCreatedEventArgs e)
         {
+            this.logger.Log($"[{this.seed}] New job arrived {e.Job.Difficulty} {e.Job.BlockDataHash}");
             if (!this.isStarted)
             {
-                //this.logger.Log($"[{this.seed}] Job created {e.Job.Difficulty} but we are not mining");
                 return;
             }
 
-            //this.logger.Log($"[{this.seed}] Job created {e.Job.Difficulty}");
+            this.isMining = false;
 
+            // Waiting for cycle to complete
+            Thread.Sleep(2000); 
             this.MineBlock(e.Job).GetAwaiter().GetResult();
         }
 
@@ -69,11 +71,12 @@ namespace Blockche.Miner.ConsoleApp
 
             while (this.isMining && this.isStarted)
             {
-
                 if (IsValidHashNonce(job))
                 {
                     this.isMining = false;
+                    this.logger.Log($"[{this.seed}] Submiting mined block {job.BlockHash}");
                     await this.jobProducer.SubmitJob(job, this.seed);
+                    break;
                 }
 
                 this.GetNextNonce(job);
@@ -106,7 +109,7 @@ namespace Blockche.Miner.ConsoleApp
 
         private bool IsValidHashNonce(JobDTO job)
         {
-            job.BlockHash = HashHelper.ComputeSHA256($"{job.BlockDataHash}{job.Nonce}");
+            job.BlockHash = HashHelper.ComputeSHA256($"{job.BlockDataHash}|{job.DateCreated}|{job.Nonce}");
             for (int i = 0; i < job.Difficulty; i++)
             {
                 if (job.BlockHash[i] != '0')
