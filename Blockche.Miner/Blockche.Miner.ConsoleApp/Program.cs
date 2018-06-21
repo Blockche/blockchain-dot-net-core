@@ -12,17 +12,30 @@ namespace Blockche.Miner.ConsoleApp
 {
     public class Program
     {
+        private static readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
         public static void Main(string[] args)
         {
             // read config sources
             // setup env
             // setup logger
+            var config = new ConsoleArgsConfigProvider();
 
-            var config = new ConsoleArgsConfigProvider(args);
-            var jobProducer = new FakeJobProducer(2000, 7);
+            IJobProducer jobProducer;
+            if (config.IsTest)
+            {
+                jobProducer = new FakeJobProducer(2000, 7);
+            }
+            else if (config.UsePool)
+            {
+                jobProducer = new PoolJobProducer();
+            }
+            else
+            {
+                jobProducer = new HttpJobProducer(config.Address, config.JobProducerUrls);
+            }
+
             var logger = new ConsoleLogger();
-
-            var tokenSource = new CancellationTokenSource();
             
             var cpuMiners = new List<CpuMiner>(config.ThreadsCount);
             for (int i = 0; i < config.ThreadsCount; i++)
@@ -33,7 +46,7 @@ namespace Blockche.Miner.ConsoleApp
             try
             {
                 Task.WaitAll(cpuMiners.Select(m => Task.Factory.StartNew(
-                    () => m.Start(), tokenSource.Token)).ToArray());
+                    () => m.Start(), cancellationTokenSource.Token)).ToArray());
             }
             catch (AggregateException e)
             {
@@ -44,10 +57,17 @@ namespace Blockche.Miner.ConsoleApp
             }
             finally
             {
-                tokenSource.Dispose();
+                cancellationTokenSource.Dispose();
             }
 
+            Console.CancelKeyPress += Console_CancelKeyPress;
             Console.ReadLine();
+        }
+
+        private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            cancellationTokenSource.Cancel();
+            cancellationTokenSource.Dispose();
         }
     }
 }

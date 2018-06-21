@@ -8,7 +8,7 @@ namespace Blockche.Miner.ConsoleApp.Config
     {
         int ThreadsCount { get; }
 
-        string JobProducerUri { get; }
+        IEnumerable<string> JobProducerUrls { get; }
 
         bool UsePool { get; }
     }
