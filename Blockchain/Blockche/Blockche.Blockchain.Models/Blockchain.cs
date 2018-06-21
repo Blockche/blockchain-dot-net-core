@@ -156,7 +156,7 @@ namespace Blockche.Blockchain.Models
             if (!ValidationUtils.IsValidPublicKey(tranData.SenderPubKey))
                 throw new ArgumentException("Invalid public key:" + tranData.SenderPubKey);
 
-            var senderAddr = CryptoUtils.PublicKeyToAddress(tranData.SenderPubKey);
+            var senderAddr = CryptoUtils.GetAddressFromPublicKey(tranData.SenderPubKey);
             if (senderAddr != tranData.From)
                 throw new ArgumentException("The public key should match the sender address:" + tranData.SenderPubKey);
 
@@ -199,7 +199,7 @@ namespace Blockche.Blockchain.Models
 
 
             var balances = this.GetAccountBalance(tran.From);
-            if (balances.ConfirmedBalance < tran.Value + tran.Fee)
+            if (balances.ConfirmedBalance < tran.Fee)
                 throw new ArgumentException("Unsufficient sender balance at address:  " + tran.From);
 
             //if (this.PendingTransactions.Any(s => CryptoUtils.BytesToHex(s.TransactionDataHash) == CryptoUtils.BytesToHex(tran.TransactionDataHash)))
