@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Miner.ConsoleApp", "Blockche.Miner.ConsoleApp\Blockche.Miner.ConsoleApp.csproj", "{04F555C6-B75E-4E6C-9A13-A5103A684BA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Miner.Tests", "Blockche.Miner.Tests\Blockche.Miner.Tests.csproj", "{4CEAC78F-B80F-4D52-9692-04EADE5BFB68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Miner.Common", "Blockche.Miner.Common\Blockche.Miner.Common.csproj", "{42E8E993-1F7A-464E-B5B6-A81CCF258809}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04F555C6-B75E-4E6C-9A13-A5103A684BA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04F555C6-B75E-4E6C-9A13-A5103A684BA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04F555C6-B75E-4E6C-9A13-A5103A684BA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04F555C6-B75E-4E6C-9A13-A5103A684BA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CEAC78F-B80F-4D52-9692-04EADE5BFB68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CEAC78F-B80F-4D52-9692-04EADE5BFB68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CEAC78F-B80F-4D52-9692-04EADE5BFB68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CEAC78F-B80F-4D52-9692-04EADE5BFB68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42E8E993-1F7A-464E-B5B6-A81CCF258809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42E8E993-1F7A-464E-B5B6-A81CCF258809}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42E8E993-1F7A-464E-B5B6-A81CCF258809}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42E8E993-1F7A-464E-B5B6-A81CCF258809}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D97BDB4D-6CE4-49BE-9D4A-BAA37D8E1386}
+	EndGlobalSection
+EndGlobal
