@@ -199,7 +199,7 @@ namespace Blockche.Blockchain.Models
 
 
             var balances = this.GetAccountBalance(tran.From);
-            if (balances.ConfirmedBalance < tran.Value + tran.Fee)
+            if (balances.ConfirmedBalance < tran.Fee)
                 throw new ArgumentException("Unsufficient sender balance at address:  " + tran.From);
 
             //if (this.PendingTransactions.Any(s => CryptoUtils.BytesToHex(s.TransactionDataHash) == CryptoUtils.BytesToHex(tran.TransactionDataHash)))

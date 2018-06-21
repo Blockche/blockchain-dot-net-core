@@ -47,8 +47,7 @@ namespace Blockche.Wallet.Web.Controllers
                     model.Value,
                     model.Fee,
                     DateCreated = creationDate,
-                    SenderPublicKey = publicKey,
-                    TransactionDataHash = CryptoUtils.BytesToHex(transactionHash),
+                    SenderPubKey = publicKey,
                     SenderSignature = transactionSignature
                 });
 
