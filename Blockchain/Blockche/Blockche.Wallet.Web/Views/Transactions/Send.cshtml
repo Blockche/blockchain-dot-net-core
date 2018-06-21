@@ -1,0 +1,32 @@
+﻿@model SendTransactionInputModel
+@tagHelperPrefix th:
+
+
+@{
+    ViewData["Title"] = "Sign";
+}
+
+<h2>Sign</h2>
+<form method="post" data-ajax="true" data-ajax-method="POST" asp-action="Send" data-ajax-success="onSuccess">
+    <label asp-for="RecipientAddress"></label>
+    <th:input asp-for="RecipientAddress" class="form-control" />
+
+    <label asp-for="Value"></label>
+    <th:input asp-for="Value" class="form-control" />
+
+    <label asp-for="Fee"></label>
+    <th:input asp-for="Fee" class="form-control" />
+
+    <input type="submit" name="submit" value="Send Transaction" class="btn btn-default" />
+</form>
+
+<div id="content" style="margin-top: 20px">
+</div>
+
+
+<script>
+    function onSuccess(ev) {
+        $('#content').html(`Transaction signature: ${JSON.stringify(ev)}`);
+    }
+</script>
+

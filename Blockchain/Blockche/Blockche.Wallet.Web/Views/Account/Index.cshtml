@@ -1,0 +1,11 @@
+﻿@using Blockche.Wallet.Web.Controllers
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+@Html.ActionLink("Generate Account", nameof(AccountController.Generate), "Account", new { @class = "btn btn-default" })
+@Html.ActionLink("Import Account", nameof(AccountController.Import), "Account", new { @class = "btn btn-default" })
+

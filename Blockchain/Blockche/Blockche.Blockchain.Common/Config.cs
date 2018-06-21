@@ -41,11 +41,5 @@ namespace Blockche.Blockchain.Common
 
             return sig;
         }
-
-
-        
-
-     
-
     }
 }
