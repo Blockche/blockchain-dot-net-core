@@ -6,10 +6,14 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
 {
     public class JobDTO
     {
-        public long Nonce { get; set; }
-
         public int Difficulty { get; set; }
 
-        public string TxHash { get; set; }
+        public ulong Nonce { get; set; }
+
+        public string DateCreated { get; set; }
+
+        public string BlockHash { get; set; }
+
+        public string BlockDataHash { get; set; }
     }
 }

@@ -65,6 +65,7 @@ namespace Blockche.Miner.ConsoleApp
 
             // Initially set to random nonce
             this.RandomizeNonce(job);
+            job.DateCreated = DateTimeHelper.UtcNowToISO8601();
 
             while (this.isMining && this.isStarted)
             {
@@ -89,7 +90,7 @@ namespace Blockche.Miner.ConsoleApp
             while (job.Nonce < 0)
             {
                 rnd.NextBytes(this.buffer);
-                job.Nonce = BitConverter.ToInt64(this.buffer, 0);
+                job.Nonce = BitConverter.ToUInt64(this.buffer, 0);
             }
         }
 
@@ -98,17 +99,17 @@ namespace Blockche.Miner.ConsoleApp
             do
             {
                 rnd.NextBytes(this.buffer);
-                job.Nonce = BitConverter.ToInt64(this.buffer, 0);
+                job.Nonce = BitConverter.ToUInt64(this.buffer, 0);
             }
             while (job.Nonce < 0);
         }
 
         private bool IsValidHashNonce(JobDTO job)
         {
-            var hash = HashHelper.ComputeSHA256($"{job.TxHash}{job.Nonce}");
+            job.BlockHash = HashHelper.ComputeSHA256($"{job.BlockDataHash}{job.Nonce}");
             for (int i = 0; i < job.Difficulty; i++)
             {
-                if (hash[i] != '0')
+                if (job.BlockHash[i] != '0')
                 {
                     return false;
                 }

@@ -37,6 +37,6 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
         }
 
         private JobCreatedEventArgs BuildJobCreatedArgs()
-            => new JobCreatedEventArgs { Job = new JobDTO { Difficulty = this.difficulty, TxHash = Guid.NewGuid().ToString("N") } };
+            => new JobCreatedEventArgs { Job = new JobDTO { Difficulty = this.difficulty, BlockDataHash = Guid.NewGuid().ToString("N") } };
     }
 }
