@@ -21,7 +21,8 @@ namespace Blockche.Blockchain.Common
 
         public const string NullSignaturePublicKey = "0000000000000000000000000000000000000000000000000000000000000000";
         public const string NullSignaturePrivateKey = NullSignaturePublicKey;
-
+        public static readonly int FaucetDailyAddressRequestCountMax = 2;
+        public static readonly int FaucetWaitMinutes = 1;
 
         public static string[] GetNullSignatureHex()
         {

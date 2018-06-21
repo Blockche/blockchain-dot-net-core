@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blockche.Blockchain.Console
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Wallet.Web", "Blockche.Wallet.Web\Blockche.Wallet.Web.csproj", "{AA4F4C39-40C3-40E8-AA84-10E57F424EDB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockche.Blockchain.Tests.Seed", "Blockche.Blockchain.Tests.Seed\Blockche.Blockchain.Tests.Seed.csproj", "{A7C3D055-740A-4C9D-90DB-766AA968D41B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{AA4F4C39-40C3-40E8-AA84-10E57F424EDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA4F4C39-40C3-40E8-AA84-10E57F424EDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA4F4C39-40C3-40E8-AA84-10E57F424EDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7C3D055-740A-4C9D-90DB-766AA968D41B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7C3D055-740A-4C9D-90DB-766AA968D41B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7C3D055-740A-4C9D-90DB-766AA968D41B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7C3D055-740A-4C9D-90DB-766AA968D41B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +69,7 @@ Global
 		{73DD9A36-6175-405D-BF59-68D592242B91} = {DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}
 		{92E7000A-B68B-4138-9057-554189092658} = {DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}
 		{4B68F4EF-C082-424B-A3D7-B3574EB435DE} = {D5A0F9A0-2B35-4FD2-80D6-7479769ABBF5}
+		{A7C3D055-740A-4C9D-90DB-766AA968D41B} = {DFBBD8AB-9EE5-45EB-BBA5-E59724ED2631}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46A3250C-B250-49BB-BB02-F57ACBF6D7A2}

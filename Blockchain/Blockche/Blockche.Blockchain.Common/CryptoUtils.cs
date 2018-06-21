@@ -323,7 +323,13 @@ namespace Blockche.Blockchain.Common
             return signature;
         }
 
-        public static bool VerifySignature(ECPublicKeyParameters keyParameters, BigInteger[] signature, byte[] msg)
+        public static bool VerifySignature(ECPoint ecPoint, BigInteger[] signature, byte[] msg)
+        {
+            ECPublicKeyParameters keyParameters = new ECPublicKeyParameters(ecPoint, Domain);
+            return VerifySignature(keyParameters, signature, msg);
+        }
+
+        public static bool VerifySignature(ECPublicKeyParameters keyParameters,BigInteger[] signature,byte[] msg )
         {
             IDsaKCalculator kCalculator = new HMacDsaKCalculator(new Sha256Digest());
             ECDsaSigner signer = new ECDsaSigner(kCalculator);
@@ -338,5 +344,103 @@ namespace Blockche.Blockchain.Common
             bool isVerified = VerifySignature(exPubKey, signature, msg);
             return isVerified;
         }
+
+
+        public static bool VerifySignature(BigInteger[] signature, byte[] hash)
+        {
+            var ecPoint = CryptoUtils.RecoverPubKeyFromSIgnatureAndHash(
+                 signature,
+                 hash);
+
+            var isTransactionValid = CryptoUtils.VerifySignature(ecPoint, signature, hash);
+            return isTransactionValid;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sig"></param>
+        /// <param name="hash"></param>
+        /// <param name="recid">????</param>
+        /// <param name="check">???</param>
+        /// <returns></returns>
+        public static ECPoint ECDSA_SIG_recover_key_GFp(BigInteger[] sig, byte[] hash, int recid, bool check)
+        {
+            
+            int i = recid / 2;
+
+            Console.WriteLine("r: " + BytesToHex(sig[0].ToByteArrayUnsigned()));
+            Console.WriteLine("s: " + BytesToHex(sig[1].ToByteArrayUnsigned()));
+
+            BigInteger order = curve.N;
+            BigInteger field = (curve.Curve as FpCurve).Q;
+            BigInteger x = order.Multiply(new BigInteger(i.ToString())).Add(sig[0]);
+            if (x.CompareTo(field) >= 0) throw new Exception("X too large");
+
+            Console.WriteLine("Order: " + BytesToHex(order.ToByteArrayUnsigned()));
+            Console.WriteLine("Field: " + BytesToHex(field.ToByteArrayUnsigned()));
+
+            byte[] compressedPoint = new Byte[x.ToByteArrayUnsigned().Length + 1];
+            compressedPoint[0] = (byte)(0x02 + (recid % 2));
+            Buffer.BlockCopy(x.ToByteArrayUnsigned(), 0, compressedPoint, 1, compressedPoint.Length - 1);
+            ECPoint R = curve.Curve.DecodePoint(compressedPoint);
+
+            Console.WriteLine("R: " + BytesToHex(R.GetEncoded()));
+
+            if (check)
+            {
+                ECPoint O = R.Multiply(order);
+                if (!O.IsInfinity) throw new Exception("Check failed");
+            }
+
+            int n = (curve.Curve as FpCurve).Q.ToByteArrayUnsigned().Length * 8;
+            BigInteger e = new BigInteger(1, hash);
+            if (8 * hash.Length > n)
+            {
+                e = e.ShiftRight(8 - (n & 7));
+            }
+            e = BigInteger.Zero.Subtract(e).Mod(order);
+            BigInteger rr = sig[0].ModInverse(order);
+            BigInteger sor = sig[1].Multiply(rr).Mod(order);
+            BigInteger eor = e.Multiply(rr).Mod(order);
+            ECPoint Q = curve.G.Multiply(eor).Add(R.Multiply(sor));
+
+            Console.WriteLine("n: " + n);
+            Console.WriteLine("e: " + BytesToHex(e.ToByteArrayUnsigned()));
+            Console.WriteLine("rr: " + BytesToHex(rr.ToByteArrayUnsigned()));
+            Console.WriteLine("sor: " + BytesToHex(sor.ToByteArrayUnsigned()));
+            Console.WriteLine("eor: " + BytesToHex(eor.ToByteArrayUnsigned()));
+            Console.WriteLine("Q: " + BytesToHex(Q.GetEncoded()));
+
+            return Q;
+        }
+
+        public static ECPoint RecoverPubKeyFromSIgnatureAndHash(BigInteger[] sig, byte[] hash)
+        {
+            int recid = -1;
+            for (int rec = 0; rec < 4; rec++)
+            {
+                try
+                {
+                    ECPoint Q = ECDSA_SIG_recover_key_GFp(sig, hash, rec, true);
+                    return Q;
+                    //if (BytesToHex(publicKey.Q.GetEncoded()).Equals(BytesToHex(Q.GetEncoded())))
+                    //{
+                    //    recid = rec;
+                    //    break;
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+
+            throw new ArgumentException("Did not find proper recid");
+        }
+
+
+
+
     }
 }

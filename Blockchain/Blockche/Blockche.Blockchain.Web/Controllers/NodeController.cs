@@ -56,7 +56,7 @@ namespace Blockche.Blockchain.Web.Controllers
         public IActionResult Reset()
         {
 
-            var data = this.GetNodeSingleton().Chain = new Models.Blockchain(Faucet.GetGenesisBlock(), Config.StartDifficulty);
+            var data = this.GetNodeSingleton().Chain = new Blockche.Blockchain.Models.Blockchain(Faucet.GetGenesisBlock(), Config.StartDifficulty);
             return Ok(new { message = "The chain was reset to its genesis block" });
         }
 
@@ -162,13 +162,13 @@ namespace Blockche.Blockchain.Web.Controllers
         [Route("transactions/send")]
         public IActionResult SendTransaction(Transaction tran)
         {
-
+            var validatedTran = this.GetNodeSingleton().Chain.AddNewTransaction(tran);
             if (tran.TransactionDataHash != null)
             {
                 // Added a new pending transaction --> broadcast it to all known peers
-                this.GetNodeSingleton().BroadcastTransactionToAllPeers(tran);
+                this.GetNodeSingleton().BroadcastTransactionToAllPeers(validatedTran);
 
-                return Ok(new { transactionDataHash = tran.TransactionDataHash });
+                return Ok(new { transactionDataHash = validatedTran.TransactionDataHash });
 
             }
 
@@ -265,10 +265,11 @@ namespace Blockche.Blockchain.Web.Controllers
         // GET api/Node/mining/get-mining-job/{address}
         [HttpGet]
         [Route("mining/get-mining-job/{address}")]
-        public IActionResult Peers(string address)
+        public IActionResult GetMiningJob(string address)
         {
             var blockCandidate = this.GetNodeSingleton().Chain.GetMiningJob(address);
-         
+
+         //retun candidate block
             return Ok(new {
                 index= blockCandidate.Index,
                 transactionsIncluded= blockCandidate.Transactions.Count,
