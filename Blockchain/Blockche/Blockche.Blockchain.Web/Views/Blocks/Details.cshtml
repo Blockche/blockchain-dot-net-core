@@ -18,7 +18,7 @@
         <div class="col-sm-9 cbs"><span id="clock"></span> @Model.DateCreated</div>
 
         <div class="col-sm-3">Transactions:</div>
-        <div class="col-sm-9 cbs"><a href="/blocks/txs/@Model.BlockHashHex">@Model.Transactions.Count transactions</a></div> @*TODO: Add block confirmations count*@
+        <div class="col-sm-9 cbs"><a href="/blocks/txs/@Model.Index">@Model.Transactions.Count transactions</a></div> @*TODO: Add block confirmations count*@
 
         <div class="col-sm-3">Hash:</div>
         <div class="col-sm-9 cbs">@Model.BlockHashHex</div>
