@@ -1,4 +1,5 @@
 ﻿using Blockche.Miner.Common;
+using Blockche.Miner.Common.Models;
 using Blockche.Miner.ConsoleApp.JobProducer;
 using Blockche.Miner.ConsoleApp.Logger;
 using System;
@@ -14,9 +15,14 @@ namespace Blockche.Miner.ConsoleApp
         private readonly int seed;
         private readonly Random rnd;
         private readonly byte[] buffer;
+        private readonly System.Timers.Timer hashRateReportTimer;
 
         private bool isMining;
         private bool isStarted;
+
+        private int operationsCount = 0;
+        private DateTime operationsStart = DateTime.UtcNow;
+        private decimal hashRate = 0;
 
         public CpuMiner(IJobProducer jobProducer, ILogger logger, int seed)
         {
@@ -25,6 +31,9 @@ namespace Blockche.Miner.ConsoleApp
             this.seed = seed;
             this.rnd = new Random(seed);
             this.buffer = new byte[8];
+
+            this.hashRateReportTimer = new System.Timers.Timer(5000);
+            this.hashRateReportTimer.Elapsed += (s, e) => this.jobProducer.ReportHashrate(this.hashRate).GetAwaiter().GetResult();
         }
 
         public void Start()
@@ -69,18 +78,31 @@ namespace Blockche.Miner.ConsoleApp
             this.RandomizeNonce(job);
             job.DateCreated = DateTimeHelper.UtcNowToISO8601();
 
+            this.operationsCount = 0;
+            this.operationsStart = DateTime.UtcNow;
+
             while (this.isMining && this.isStarted)
             {
                 if (IsValidHashNonce(job))
                 {
+                    this.UpdateHashrate();
+
                     this.isMining = false;
                     this.logger.Log($"[{this.seed}] Submiting mined block {job.BlockHash}");
-                    await this.jobProducer.SubmitJob(job, this.seed);
+                    await this.jobProducer.SubmitJob(job);
                     break;
                 }
 
                 this.GetNextNonce(job);
             }
+        }
+
+        private void UpdateHashrate()
+        {
+            this.hashRate = (decimal)this.operationsCount / (DateTime.UtcNow - this.operationsStart).Milliseconds;
+
+            this.operationsCount = 0;
+            this.operationsStart = DateTime.UtcNow;
         }
 
         private void GetNextNonce(JobDTO job)

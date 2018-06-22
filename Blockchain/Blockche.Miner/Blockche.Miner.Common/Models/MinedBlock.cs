@@ -1,4 +1,4 @@
-﻿namespace Blockche.Miner.ConsoleApp.JobProducer
+﻿namespace Blockche.Miner.Common.Models
 {
     public class MinedBlock
     {

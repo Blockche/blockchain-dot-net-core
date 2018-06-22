@@ -19,6 +19,11 @@ namespace Blockche.Miner.ConsoleApp
             // read config sources
             // setup env
             // setup logger
+
+            new PoolJobProducer(new[] { "http://localhost:50307" }, "user1", "worker1");
+            Console.ReadLine();
+            return;
+
             var config = new ConsoleArgsConfigProvider();
 
             IJobProducer jobProducer;
@@ -28,7 +33,7 @@ namespace Blockche.Miner.ConsoleApp
             }
             else if (config.UsePool)
             {
-                jobProducer = new PoolJobProducer();
+                jobProducer = new PoolJobProducer(config.JobProducerUrls, config.User, config.Worker);
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blockche.Miner.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

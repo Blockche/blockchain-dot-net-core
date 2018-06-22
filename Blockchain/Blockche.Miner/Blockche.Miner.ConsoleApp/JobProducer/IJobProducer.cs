@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blockche.Miner.Common.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace Blockche.Miner.ConsoleApp.JobProducer
@@ -7,6 +8,8 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
     {
         event EventHandler<JobCreatedEventArgs> JobCreated;
 
-        Task SubmitJob(JobDTO job, int miner);
+        Task SubmitJob(JobDTO job);
+
+        Task ReportHashrate(decimal hashRate);
     }
 }
