@@ -4,7 +4,11 @@ using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Security;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.KeyStore.Crypto;
+using Nethereum.KeyStore.Model;
 using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -135,6 +139,120 @@ namespace Blockche.Blockchain.Common
             return gen.GenerateKeyPair();
         }
 
+        public static KeyStore GenerateKeystore(string password, string seed)
+        {
+            var secureRandom = new SecureRandom();
+
+            var privateKey = GenerateRandomPrivateKey(seed).ToString(16);
+            var salt = secureRandom.GenerateSeed(16);
+
+            const int cost = 8192;
+            const int blockSize = 8;
+            const int parallelization = 1;
+            const int dkLength = 256;
+
+            var decriptionKey = GenerateSCryptKey(
+                password.HexToByteArray(),
+                salt,
+                cost,
+                blockSize,
+                parallelization,
+                dkLength);
+
+            var iv = secureRandom.GenerateSeed(16);
+            var ciphartext = BytesToHex(AesCtrEncrypt(privateKey.HexToByteArray(), iv, decriptionKey));
+
+            var mac = CalcSHA256InHex(BytesToHex(decriptionKey) + ciphartext);
+
+            var keystore = new KeyStore
+            {
+                Cipher = "aes-128-ctr",
+                Ciphertext = ciphartext,
+                Id = Guid.NewGuid().ToString(),
+                CipherParamIv = BytesToHex(iv),
+                Kdf = "script",
+                KdfParameters = new KdfParameters
+                {
+                    DkLength = dkLength,
+                    N = cost,
+                    Salt = BytesToHex(salt),
+                    P = parallelization,
+                    R = blockSize
+                },
+                Mac = mac
+            };
+
+            return keystore;
+        }
+
+        public static string GetPrivateKeyFromKeyStore(KeyStore keystore, string password)
+        {
+            if (keystore.Cipher != "aes-128-ctr")
+            {
+                throw new ArgumentException("Invalid Chipher");
+            }
+
+            if (keystore.Kdf != "script")
+            {
+                throw new ArgumentException("Invalid Kdf");
+            }
+
+            byte[] decriptionKey = GenerateSCryptKey(
+                password.HexToByteArray(),
+                keystore.KdfParameters.Salt.HexToByteArray(),
+                keystore.KdfParameters.N,
+                keystore.KdfParameters.R,
+                keystore.KdfParameters.P,
+                keystore.KdfParameters.DkLength);
+
+            var mac = CalcSHA256InHex(BytesToHex(decriptionKey) + keystore.Ciphertext);
+
+            if (mac != keystore.Mac)
+            {
+                throw new ArgumentException("Invalid password");
+            }
+
+            return BytesToHex(
+                AesCtrDecrypt(
+                    keystore.Ciphertext.HexToByteArray(),
+                    keystore.CipherParamIv.HexToByteArray(),
+                    decriptionKey));
+        }
+
+
+
+        public static byte[] AesCtrEncrypt(byte[] message, byte[] iv, byte[] key)
+        {
+            KeyStoreCrypto keyStoreCrypto = new KeyStoreCrypto();
+            byte[] encryptedMessage = keyStoreCrypto.GenerateAesCtrCipher(iv, key, message);
+            return encryptedMessage;
+        }
+
+        public static byte[] AesCtrDecrypt(byte[] input, byte[] iv, byte[] key)
+        {
+            KeyStoreCrypto keyStoreCrypto = new KeyStoreCrypto();
+            byte[] decryptedMessage = keyStoreCrypto.GenerateAesCtrDeCipher(iv, key, input);
+            return decryptedMessage;
+        }
+
+        public static byte[] GenerateSCryptKey(
+            byte[] passphrase,
+            byte[] salt,
+            int cost,
+            int blockSize,
+            int parallelization,
+            int desiredKeyBitLength)
+        {
+            byte[] key = Org.BouncyCastle.Crypto.Generators.SCrypt.Generate(
+                passphrase,
+                salt,
+                cost,
+                blockSize,
+                parallelization,
+                desiredKeyBitLength / 8);
+            return key;
+        }
+
         public static string EncodeECPointHexCompressed(ECPoint point)
         {
             var x = point.XCoord.ToBigInteger();
@@ -143,7 +261,7 @@ namespace Blockche.Blockchain.Common
             return x.ToString(16) + Convert.ToInt32(y.TestBit(0));
         }
 
-        public static BigInteger GenerateRandomPrivateKey(string seed)
+        public static BigInteger GenerateRandomPrivateKey(string seed = null)
         {
             var keyPair = GenerateRandomKeys(seed);
 
@@ -238,7 +356,7 @@ namespace Blockche.Blockchain.Common
             string senderPrivateKeyHex)
         {
             var privateKey = new BigInteger(senderPrivateKeyHex, 16);
-            
+
             var tranSignature = SignData(privateKey, transactionHash);
 
             return tranSignature;
@@ -334,7 +452,7 @@ namespace Blockche.Blockchain.Common
             return VerifySignature(keyParameters, signature, msg);
         }
 
-        public static bool VerifySignature(ECPublicKeyParameters keyParameters,BigInteger[] signature,byte[] msg )
+        public static bool VerifySignature(ECPublicKeyParameters keyParameters, BigInteger[] signature, byte[] msg)
         {
             IDsaKCalculator kCalculator = new HMacDsaKCalculator(new Sha256Digest());
             var signer = new ECDsaSigner(kCalculator);
@@ -345,7 +463,7 @@ namespace Blockche.Blockchain.Common
 
         public static bool VerifySignature(string privateKeyHex, BigInteger[] signature, byte[] msg)
         {
-            var exPubKey =   ToPublicKey(privateKeyHex);
+            var exPubKey = ToPublicKey(privateKeyHex);
             var isVerified = VerifySignature(exPubKey, signature, msg);
             return isVerified;
         }
@@ -371,7 +489,7 @@ namespace Blockche.Blockchain.Common
         /// <returns></returns>
         public static ECPoint ECDSA_SIG_recover_key_GFp(BigInteger[] sig, byte[] hash, int recid, bool check)
         {
-            
+
             var i = recid / 2;
 
             Console.WriteLine("r: " + BytesToHex(sig[0].ToByteArrayUnsigned()));
