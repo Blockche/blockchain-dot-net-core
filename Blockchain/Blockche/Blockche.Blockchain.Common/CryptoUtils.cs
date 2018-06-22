@@ -23,7 +23,7 @@ namespace Blockche.Blockchain.Common
 
         public static ECPoint GetPublicKeyFromPrivateKey(BigInteger privKey)
         {
-            ECPoint pubKey = curve.G.Multiply(privKey).Normalize();
+            var pubKey = curve.G.Multiply(privKey).Normalize();
 
             return pubKey;
         }
@@ -35,9 +35,9 @@ namespace Blockche.Blockchain.Common
 
         public static byte[] HexToBytes(string hexString)
         {
-            int NumberChars = hexString.Length;
-            byte[] bytes = new byte[NumberChars / 2];
-            for (int i = 0; i < NumberChars; i += 2)
+            var NumberChars = hexString.Length;
+            var bytes = new byte[NumberChars / 2];
+            for (var i = 0; i < NumberChars; i += 2)
             {
                 // var len = i + 2 <= NumberChars ? 2 : 1;
                 bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
@@ -47,7 +47,7 @@ namespace Blockche.Blockchain.Common
 
         public static BigInteger[] SignatureByHex(string[] sigArr)
         {
-            BigInteger[] sig = new BigInteger[2];
+            var sig = new BigInteger[2];
             sig[0] = new BigInteger(sigArr[0], 16);
             sig[1] = new BigInteger(sigArr[1], 16);
 
@@ -56,7 +56,7 @@ namespace Blockche.Blockchain.Common
 
         public static string[] SignatureByBigInt(BigInteger[] sigBigInt)
         {
-            string[] sign = new string[2];
+            var sign = new string[2];
             sign[0] = sigBigInt[0].ToString(16);
             sign[1] = sigBigInt[1].ToString(16);
 
@@ -65,16 +65,16 @@ namespace Blockche.Blockchain.Common
 
         public static byte[] GetBytes(string data)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(data);
+            var bytes = Encoding.UTF8.GetBytes(data);
             return bytes;
         }
 
         public static string CalcRIPEMD160(string text)
         {
-            byte[] bytes = GetBytes(text);
-            RipeMD160Digest digest = new RipeMD160Digest();
+            var bytes = GetBytes(text);
+            var digest = new RipeMD160Digest();
             digest.BlockUpdate(bytes, 0, bytes.Length);
-            byte[] result = new byte[digest.GetDigestSize()];
+            var result = new byte[digest.GetDigestSize()];
             digest.DoFinal(result, 0);
             return BytesToHex(result);
 
@@ -82,9 +82,9 @@ namespace Blockche.Blockchain.Common
 
         public static string CalcRIPEMD160(byte[] keyBytes)
         {
-            RipeMD160Digest digest = new RipeMD160Digest();
+            var digest = new RipeMD160Digest();
             digest.BlockUpdate(keyBytes, 0, keyBytes.Length);
-            byte[] result = new byte[digest.GetDigestSize()];
+            var result = new byte[digest.GetDigestSize()];
             digest.DoFinal(result, 0);
             return BytesToHex(result);
 
@@ -103,51 +103,56 @@ namespace Blockche.Blockchain.Common
 
         public static byte[] CalcSHA256(string text)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(text);
-            Sha256Digest digest = new Sha256Digest();
+            var bytes = Encoding.UTF8.GetBytes(text);
+            var digest = new Sha256Digest();
             digest.BlockUpdate(bytes, 0, bytes.Length);
-            byte[] result = new byte[digest.GetDigestSize()];
+            var result = new byte[digest.GetDigestSize()];
             digest.DoFinal(result, 0);
             return result;
         }
 
         public static string CalcSHA256InHex(string text)
         {
-            byte[] bytes = GetBytes(text);
-            Sha256Digest digest = new Sha256Digest();
+            var bytes = GetBytes(text);
+            var digest = new Sha256Digest();
             digest.BlockUpdate(bytes, 0, bytes.Length);
-            byte[] result = new byte[digest.GetDigestSize()];
+            var result = new byte[digest.GetDigestSize()];
             digest.DoFinal(result, 0);
             return BytesToHex(result);
         }
 
-        public static AsymmetricCipherKeyPair GenerateRandomKeys(int keySize = 256)
+        public static AsymmetricCipherKeyPair GenerateRandomKeys(string seed = null, int keySize = 256)
         {
-            ECKeyPairGenerator gen = new ECKeyPairGenerator();
-            SecureRandom secureRandom = new SecureRandom();
-            KeyGenerationParameters keyGenParams = new KeyGenerationParameters(secureRandom, keySize);
+            var gen = new ECKeyPairGenerator();
+            var secureRandom = new SecureRandom();
+            if (seed != null)
+            {
+                var seedBytes = Encoding.ASCII.GetBytes(seed);
+                secureRandom.SetSeed(seedBytes);
+            }
+            var keyGenParams = new KeyGenerationParameters(secureRandom, keySize);
             gen.Init(keyGenParams);
             return gen.GenerateKeyPair();
         }
 
         public static string EncodeECPointHexCompressed(ECPoint point)
         {
-            BigInteger x = point.XCoord.ToBigInteger();
-            BigInteger y = point.YCoord.ToBigInteger();
+            var x = point.XCoord.ToBigInteger();
+            var y = point.YCoord.ToBigInteger();
 
             return x.ToString(16) + Convert.ToInt32(y.TestBit(0));
         }
 
-        public static BigInteger GenerateRandomPrivateKey()
+        public static BigInteger GenerateRandomPrivateKey(string seed)
         {
-            var keyPair = GenerateRandomKeys();
+            var keyPair = GenerateRandomKeys(seed);
 
             return ((ECPrivateKeyParameters)keyPair.Private).D;
         }
 
-        public static AccountInfo GenerateNewAccount()
+        public static AccountInfo GenerateNewAccount(string seed)
         {
-            var privateKey = GenerateRandomPrivateKey();
+            var privateKey = GenerateRandomPrivateKey(seed);
 
             var privateKeyHexString = privateKey.ToString(16);
 
@@ -170,19 +175,19 @@ namespace Blockche.Blockchain.Common
             Console.WriteLine("Existing private key --> public key --> address");
             Console.WriteLine("-----------------------------------------------");
 
-            BigInteger privateKey = new BigInteger(privKeyHex, 16);
+            var privateKey = new BigInteger(privKeyHex, 16);
             Console.WriteLine("Private key (hex): " + privateKey.ToString(16));
             Console.WriteLine("Private key: " + privateKey.ToString(10));
 
-            ECPoint pubKey = GetPublicKeyFromPrivateKey(privateKey);
+            var pubKey = GetPublicKeyFromPrivateKey(privateKey);
             Console.WriteLine("Public key: ({0}, {1})",
                 pubKey.XCoord.ToBigInteger().ToString(10),
                 pubKey.YCoord.ToBigInteger().ToString(10));
 
-            string pubKeyCompressed = EncodeECPointHexCompressed(pubKey);
+            var pubKeyCompressed = EncodeECPointHexCompressed(pubKey);
             Console.WriteLine("Public key (compressed): " + pubKeyCompressed);
 
-            string addr = CalcRIPEMD160(pubKeyCompressed);
+            var addr = CalcRIPEMD160(pubKeyCompressed);
             Console.WriteLine("Blockchain address: " + addr);
             return addr;
         }
@@ -194,10 +199,10 @@ namespace Blockche.Blockchain.Common
 
         public static string GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
         {
-            BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
+            var privateKey = new BigInteger(senderPrivKeyHex, 16);
 
-            ECPoint pubKey = GetPublicKeyFromPrivateKey(privateKey);
-            string senderPubKeyCompressed = EncodeECPointHexCompressed(pubKey);
+            var pubKey = GetPublicKeyFromPrivateKey(privateKey);
+            var senderPubKeyCompressed = EncodeECPointHexCompressed(pubKey);
 
             return senderPubKeyCompressed;
         }
@@ -246,13 +251,13 @@ namespace Blockche.Blockchain.Common
             Console.WriteLine("-------------------------------");
 
             Console.WriteLine("Sender private key:", senderPrivKeyHex);
-            BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
+            var privateKey = new BigInteger(senderPrivKeyHex, 16);
 
-            ECPoint pubKey = GetPublicKeyFromPrivateKey(privateKey);
-            string senderPubKeyCompressed = EncodeECPointHexCompressed(pubKey);
+            var pubKey = GetPublicKeyFromPrivateKey(privateKey);
+            var senderPubKeyCompressed = EncodeECPointHexCompressed(pubKey);
             Console.WriteLine("Public key (compressed): " + senderPubKeyCompressed);
 
-            string senderAddress = CalcRIPEMD160(senderPubKeyCompressed);
+            var senderAddress = CalcRIPEMD160(senderPubKeyCompressed);
             Console.WriteLine("Blockchain address: " + senderAddress);
 
             var tran = new
@@ -265,13 +270,13 @@ namespace Blockche.Blockchain.Common
                 dateCreated = iso8601datetime,
 
             };
-            string tranJson = JsonConvert.SerializeObject(tran);
+            var tranJson = JsonConvert.SerializeObject(tran);
             Console.WriteLine("Transaction (JSON): {0}", tranJson);
 
-            byte[] tranHash = CalcSHA256(tranJson);
+            var tranHash = CalcSHA256(tranJson);
             Console.WriteLine("Transaction hash(sha256): {0}", BytesToHex(tranHash));
 
-            BigInteger[] tranSignature = SignData(privateKey, tranHash);
+            var tranSignature = SignData(privateKey, tranHash);
             Console.WriteLine("Transaction signature: [{0}, {1}]",
                 tranSignature[0].ToString(16), tranSignature[1].ToString(16));
 
@@ -290,19 +295,19 @@ namespace Blockche.Blockchain.Common
                 }
             };
 
-            string signedTranJson = JsonConvert.SerializeObject(tranSigned, Formatting.Indented);
+            var signedTranJson = JsonConvert.SerializeObject(tranSigned, Formatting.Indented);
             Console.WriteLine("Signed transaction (JSON):");
             Console.WriteLine(signedTranJson);
 
             //verify transaction
-            ECPublicKeyParameters exPubKey = ToPublicKey(senderPrivKeyHex);
-            bool isVerified = VerifySignature(exPubKey, tranSignature, tranHash);
+            var exPubKey = ToPublicKey(senderPrivKeyHex);
+            var isVerified = VerifySignature(exPubKey, tranSignature, tranHash);
             Console.WriteLine("Is the signature valid: " + isVerified);
         }
 
         public static ECPublicKeyParameters ToPublicKey(string privateKey)
         {
-            BigInteger d = new BigInteger(privateKey, 16);
+            var d = new BigInteger(privateKey, 16);
             var q = Domain.G.Multiply(d);
             var publicParams = new ECPublicKeyParameters(q, Domain);
             return publicParams;
@@ -313,26 +318,26 @@ namespace Blockche.Blockchain.Common
         /// </summary>
         public static BigInteger[] SignData(BigInteger privateKey, byte[] data)
         {
-            ECPrivateKeyParameters keyParameters = new ECPrivateKeyParameters(privateKey, Domain);
+            var keyParameters = new ECPrivateKeyParameters(privateKey, Domain);
             IDsaKCalculator kCalculator = new HMacDsaKCalculator(new Sha256Digest());
-            ECDsaSigner signer = new ECDsaSigner(kCalculator);
+            var signer = new ECDsaSigner(kCalculator);
 
             signer.Init(true, keyParameters);
-            BigInteger[] signature = signer.GenerateSignature(data);
+            var signature = signer.GenerateSignature(data);
 
             return signature;
         }
 
         public static bool VerifySignature(ECPoint ecPoint, BigInteger[] signature, byte[] msg)
         {
-            ECPublicKeyParameters keyParameters = new ECPublicKeyParameters(ecPoint, Domain);
+            var keyParameters = new ECPublicKeyParameters(ecPoint, Domain);
             return VerifySignature(keyParameters, signature, msg);
         }
 
         public static bool VerifySignature(ECPublicKeyParameters keyParameters,BigInteger[] signature,byte[] msg )
         {
             IDsaKCalculator kCalculator = new HMacDsaKCalculator(new Sha256Digest());
-            ECDsaSigner signer = new ECDsaSigner(kCalculator);
+            var signer = new ECDsaSigner(kCalculator);
             signer.Init(false, keyParameters);
 
             return signer.VerifySignature(msg, signature[0], signature[1]);
@@ -340,8 +345,8 @@ namespace Blockche.Blockchain.Common
 
         public static bool VerifySignature(string privateKeyHex, BigInteger[] signature, byte[] msg)
         {
-            ECPublicKeyParameters exPubKey =   ToPublicKey(privateKeyHex);
-            bool isVerified = VerifySignature(exPubKey, signature, msg);
+            var exPubKey =   ToPublicKey(privateKeyHex);
+            var isVerified = VerifySignature(exPubKey, signature, msg);
             return isVerified;
         }
 
@@ -367,43 +372,44 @@ namespace Blockche.Blockchain.Common
         public static ECPoint ECDSA_SIG_recover_key_GFp(BigInteger[] sig, byte[] hash, int recid, bool check)
         {
             
-            int i = recid / 2;
+            var i = recid / 2;
 
             Console.WriteLine("r: " + BytesToHex(sig[0].ToByteArrayUnsigned()));
             Console.WriteLine("s: " + BytesToHex(sig[1].ToByteArrayUnsigned()));
 
-            BigInteger order = curve.N;
-            BigInteger field = (curve.Curve as FpCurve).Q;
-            BigInteger x = order.Multiply(new BigInteger(i.ToString())).Add(sig[0]);
+            var order = curve.N;
+            var field = (curve.Curve as FpCurve).Q;
+            var x = order.Multiply(new BigInteger(i.ToString())).Add(sig[0]);
             if (x.CompareTo(field) >= 0) throw new Exception("X too large");
 
             Console.WriteLine("Order: " + BytesToHex(order.ToByteArrayUnsigned()));
             Console.WriteLine("Field: " + BytesToHex(field.ToByteArrayUnsigned()));
 
-            byte[] compressedPoint = new Byte[x.ToByteArrayUnsigned().Length + 1];
+            var compressedPoint = new Byte[x.ToByteArrayUnsigned().Length + 1];
             compressedPoint[0] = (byte)(0x02 + (recid % 2));
             Buffer.BlockCopy(x.ToByteArrayUnsigned(), 0, compressedPoint, 1, compressedPoint.Length - 1);
-            ECPoint R = curve.Curve.DecodePoint(compressedPoint);
+            var R = curve.Curve.DecodePoint(compressedPoint);
 
             Console.WriteLine("R: " + BytesToHex(R.GetEncoded()));
 
             if (check)
             {
-                ECPoint O = R.Multiply(order);
+                var O = R.Multiply(order);
                 if (!O.IsInfinity) throw new Exception("Check failed");
             }
 
-            int n = (curve.Curve as FpCurve).Q.ToByteArrayUnsigned().Length * 8;
-            BigInteger e = new BigInteger(1, hash);
+            var n = (curve.Curve as FpCurve).Q.ToByteArrayUnsigned().Length * 8;
+            var e = new BigInteger(1, hash);
             if (8 * hash.Length > n)
             {
                 e = e.ShiftRight(8 - (n & 7));
             }
+
             e = BigInteger.Zero.Subtract(e).Mod(order);
-            BigInteger rr = sig[0].ModInverse(order);
-            BigInteger sor = sig[1].Multiply(rr).Mod(order);
-            BigInteger eor = e.Multiply(rr).Mod(order);
-            ECPoint Q = curve.G.Multiply(eor).Add(R.Multiply(sor));
+            var rr = sig[0].ModInverse(order);
+            var sor = sig[1].Multiply(rr).Mod(order);
+            var eor = e.Multiply(rr).Mod(order);
+            var Q = curve.G.Multiply(eor).Add(R.Multiply(sor));
 
             Console.WriteLine("n: " + n);
             Console.WriteLine("e: " + BytesToHex(e.ToByteArrayUnsigned()));
@@ -417,12 +423,12 @@ namespace Blockche.Blockchain.Common
 
         public static ECPoint RecoverPubKeyFromSIgnatureAndHash(BigInteger[] sig, byte[] hash)
         {
-            int recid = -1;
-            for (int rec = 0; rec < 4; rec++)
+            var recid = -1;
+            for (var rec = 0; rec < 4; rec++)
             {
                 try
                 {
-                    ECPoint Q = ECDSA_SIG_recover_key_GFp(sig, hash, rec, true);
+                    var Q = ECDSA_SIG_recover_key_GFp(sig, hash, rec, true);
                     return Q;
                     //if (BytesToHex(publicKey.Q.GetEncoded()).Equals(BytesToHex(Q.GetEncoded())))
                     //{

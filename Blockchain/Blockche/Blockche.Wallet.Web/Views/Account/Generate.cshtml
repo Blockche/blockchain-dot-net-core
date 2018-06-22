@@ -5,8 +5,10 @@
 
 <h2>Generate</h2>
 
-<form method="post" data-ajax="true" data-ajax-method="POST" asp-action="GenerateAccount" data-ajax-success="onSuccess">
-    <input type="submit" name="submit" value="Generate new account" class="btn btn-default"/>
+<form method="post" data-ajax="true" data-ajax-method="POST" asp-action="GenerateAccount" data-ajax-success="onSuccess" class="row">
+    <label class="col-sm-12">Random seed material from your mouse</label>
+    <textarea name="seed" id="seed" rows="10" cols="120" class="col-sm-12"></textarea>
+    <input type="submit" name="submit" value="Generate new account" class="btn btn-default" />
 </form>
 
 <div id="content" style="margin-top: 20px">
@@ -19,4 +21,47 @@
         const address = ev.address;
         $('#content').html(`Private Key: ${pk} </br> Public Key: ${pubKey} </br> Address: ${address}`);
     }
+
 </script>
+@section Scripts {
+
+    <script>
+        $(function () {
+            let randomString = '';
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            $(document).mousemove(function (event) {
+                if (Math.random() >= 0.01) {
+                    randomString += possible.charAt(event.pageX % possible.length);
+
+                    $('body').append(
+                        `<div class=\"seedpoint\" style=\"top: ${event.pageY}px; left: ${event.pageX}px;\"></div>`);
+                }
+                if (Math.random() >= 0.01) {
+                    randomString += possible.charAt(event.pageY % possible.length);
+
+                    $('body').append(
+                        `<div class=\"seedpoint\" style=\"top: ${event.pageY}px; left: ${event.pageX}px;\"></div>`);
+                }
+
+                $('#seed').text(randomString);
+
+                if (randomString.length >= 500) {
+                    $('.seedpoint').remove();
+                    $(document).unbind('mousemove');
+                }
+            });
+        })
+    </script>
+}
+
+<style>
+    .seedpoint {
+        width: 6px;
+        height: 6px;
+        display: block;
+        border-radius: 3px;
+        background-color: #0000cd;
+        position: absolute;
+        z-index: 10;
+    }
+</style>

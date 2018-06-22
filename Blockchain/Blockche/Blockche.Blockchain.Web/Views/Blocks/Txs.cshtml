@@ -24,10 +24,11 @@
     <tbody>
         @foreach (var tx in Model)
         {
+            var age = (int)(DateTime.UtcNow - DateTime.Parse(tx.DateCreated)).TotalMinutes;
             <tr>
                 <td><span class="address-tag"><a href="/transactions/details/@tx.TransactionHashHex">@tx.TransactionHashHex</a></span></td>
                 <td class="hidden-sm"><a href="/blocks/details/@tx.MinedInBlockIndex">@tx.MinedInBlockIndex</a></td>
-                <td><span rel="tooltip" data-placement="bottom" title="@tx.DateCreated">@tx.DateCreated</span></td> @*TODO: Calculcate age*@
+                <td><span rel="tooltip" data-placement="bottom" title="@tx.DateCreated">@age minutes ago</span></td> @*TODO: Calculcate age*@
                 <td><span class="address-tag"><a href="/addresses/details/@tx.From">@tx.From</a></span></td>
                 <td> ▶ </td>
                 <td><span class="address-tag"><a href="/addresses/details/@tx.To">@tx.To</a></span></td>

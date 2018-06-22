@@ -13,9 +13,9 @@ namespace Blockche.Wallet.Web.Controllers
         }
         
         [HttpPost]
-        public IActionResult GenerateAccount()
+        public IActionResult GenerateAccount(string seed)
         {
-            var account = CryptoUtils.GenerateNewAccount();
+            var account = CryptoUtils.GenerateNewAccount(seed);
 
             return this.Json(account);
         }
