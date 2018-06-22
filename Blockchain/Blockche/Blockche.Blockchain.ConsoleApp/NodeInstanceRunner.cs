@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Blockche.Blockchain.Common;
+using Blockche.Blockchain.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 
 namespace Blockche.Blockchain.ConsoleApp
 {
@@ -9,7 +12,7 @@ namespace Blockche.Blockchain.ConsoleApp
     {
         //https://stackoverflow.com/questions/15234448/run-shell-commands-using-c-sharp-and-get-the-info-into-string
 
-      
+
 
         public static void StartMultipleInstances(string[] urls)
         {
@@ -33,7 +36,7 @@ namespace Blockche.Blockchain.ConsoleApp
 
                 proc.Start();
 
-                Console.WriteLine("Node running at:" +url);
+                Console.WriteLine("Node running at:" + url);
 
                 //while (!proc.StandardOutput.EndOfStream)
                 //{
@@ -42,8 +45,42 @@ namespace Blockche.Blockchain.ConsoleApp
                 //}
             }
 
-            
-           
+
+
+        }
+
+
+        public static void ConnectBetweenInstances(string[] urls,string explorerUrl)
+        {
+            var doesExplorerResponds = WebRequester.Ping(explorerUrl);
+            if (doesExplorerResponds)
+            {
+                ConnectPeers(explorerUrl, urls[0]);
+            }
+
+            //it's intentionally up to urls.Length-1
+            for (int i = 0; i < urls.Length-1; i++) 
+            {
+                ConnectPeers(urls[i], urls[i + 1]);
+            }
+        }
+
+        private static void ConnectPeers( string urlFrom, string urlTo)
+        {
+            try
+            {
+                Console.WriteLine("Connecting {0} to {1} and vise versa", urlFrom, urlTo);
+                //prevent recursive callings
+               WebRequester.Post(urlFrom + "/api/Node/peers/connect", new Peer() { NodeUrl = urlTo, IsRecursive = false });
+                //WebRequester.Post(urlFrom + "/api/Node/peers/connect", new Peer() { NodeUrl = urlTo ,IsRecursive=true});
+                //Thread.Sleep(2000);
+                //WebRequester.Post(urlTo + "/api/Node/peers/connect", new Peer() { NodeUrl = urlFrom, IsRecursive = true });
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
