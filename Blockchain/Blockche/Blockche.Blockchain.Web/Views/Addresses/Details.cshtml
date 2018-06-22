@@ -1,10 +1,10 @@
 ﻿@model Blockche.Blockchain.Web.Models.AddressViewModel
 
 @{
-    ViewData["Title"] = "Transaction Details";
+    ViewData["Title"] = "Address Details";
 }
 
-<h2>Transaction Information</h2>
+<h2>Address Information</h2>
 
 <h2 class="well">Account Balances</h2>
 <div class="container row" style="margin-top:30px">
@@ -36,8 +36,7 @@
 @if (Model.TransTo.Count > 0)
 {
     <h2 class="well">Recieved transactions</h2>
-
-
+    
     foreach (var item in Model.TransTo)
     {
         Html.RenderPartial("~/Views/Shared/_TransactionPartial.cshtml", item);
