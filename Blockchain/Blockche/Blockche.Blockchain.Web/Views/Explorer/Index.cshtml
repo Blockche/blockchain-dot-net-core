@@ -47,7 +47,8 @@
 
                 var blocksHtml = "";
 
-                for (var i = 0; i < data.blocks.length; i++) {
+                var blocks = data.blocks.reverse();
+                for (var i = 0; i < blocks.length; i++) {
                     blocksHtml += 
 "<div class='media'> \
 <div class='media-body'>\
@@ -64,7 +65,9 @@
 
                 var pendTranHtml = "";
 
-                for (var i = 0; i < data.pendingTransactions.length; i++) {
+                var pendingTransactions = data.pendingTransactions.reverse();
+
+                for (var i = 0; i < pendingTransactions.length; i++) {
                     pendTranHtml += 
 
 "<div class='media'> \
@@ -83,8 +86,9 @@
                 pendTranCon.html(pendTranHtml);
 
                 var confTranHtml = "";
+                var confirmerdTrans = data.confirmedTran.reverse();
 
-                for (var i = 0; i < data.confirmedTran.length; i++) {
+                for (var i = 0; i < confirmerdTrans.length; i++) {
                     confTranHtml +=
 
                         "<div class='media'> \

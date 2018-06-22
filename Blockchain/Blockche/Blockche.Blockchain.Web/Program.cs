@@ -23,7 +23,7 @@ namespace Blockche.Blockchain.Web
                 .Build();
 
             return WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://*:5000")
+                .UseUrls("http://*:5000") //default if no url provided
                 .UseConfiguration(config)
                 .UseStartup<Startup>()
                   //.Configure(app =>
