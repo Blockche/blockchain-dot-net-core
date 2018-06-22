@@ -3,36 +3,38 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Request NoCoins</h2>
+<div class="container">
+    <h2>Request NoCoins</h2>
 
-<form asp-controller="Faucet" asp-action="RequestNoCoins" method="post">
+    <form asp-controller="Faucet" asp-action="RequestNoCoins" method="post">
 
-    <div class="form-horizontal">
-        <h4>Get 1000 NoCoins</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-horizontal">
+            <h4>Get 1000 NoCoins</h4>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="form-group">
-            <label asp-for="Address" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Address" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Message" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Message" class="form-control" />
-                <span asp-validation-for="Message" class="text-danger"></span>
+            <div class="form-group">
+                <label asp-for="Message" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Message" class="form-control" />
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Post transaction" class="btn btn-default" />
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Post transaction" class="btn btn-default" />
+                </div>
             </div>
-        </div>
 
-        
-    </div>
-</form>
+
+        </div>
+    </form>
+</div>
 

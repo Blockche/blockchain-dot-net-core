@@ -4,26 +4,27 @@
 }
 
 
-<div class="jumbotron text-xs-center">
-    @if (Model.Success)
-    {
-        <div class="lead">
-            <h1 class="display-3">Thank You!</h1>
-            <div class="alert alert-success">
-                <strong>Request Successeded!</strong> @Model.Message
+<div class="container">
+    <div class="jumbotron text-xs-center">
+        @if (Model.Success)
+        {
+            <div class="lead">
+                <h1 class="display-3">Thank You!</h1>
+                <div class="alert alert-success">
+                    <strong>Request Successeded!</strong> @Model.Message
+                </div>
             </div>
-        </div>
-    }
-    else
-    {
-        <div class="lead">
-            <h1 class="display-3">Sorry!</h1>
-            <div class="alert alert-warning">
-                <strong>Request failed!</strong> @Model.Message
+        }
+        else
+        {
+            <div class="lead">
+                <h1 class="display-3">Sorry!</h1>
+                <div class="alert alert-warning">
+                    <strong>Request failed!</strong> @Model.Message
+                </div>
             </div>
-        </div>
-    }
+        }
 
+    </div>
 </div>
-
 

@@ -4,42 +4,43 @@
     ViewData["Title"] = "Address Details";
 }
 
-<h2>Address Information</h2>
+<div class="container">
+    <h2>Address Information</h2>
 
-<h2 class="well">Account Balances</h2>
-<div class="container row" style="margin-top:30px">
-    <div class="col-sm-3">Confirmed Balance:</div>
-    <div id="tx" class="col-sm-9 cbs" style="word-wrap: break-word;">@Model.Balance.ConfirmedBalance</div>
-    <div class="col-sm-3">Pending Balance</div>
-    <div class="col-sm-9 cbs">
-        @Model.Balance.PendingBalance
+    <h2 class="well">Account Balances</h2>
+    <div class="container row" style="margin-top:30px">
+        <div class="col-sm-3">Confirmed Balance:</div>
+        <div id="tx" class="col-sm-9 cbs" style="word-wrap: break-word;">@Model.Balance.ConfirmedBalance</div>
+        <div class="col-sm-3">Pending Balance</div>
+        <div class="col-sm-9 cbs">
+            @Model.Balance.PendingBalance
+        </div>
+        <div class="col-sm-3">Safe Balnce</div>
+        <div class="col-sm-9 cbs">
+            @Model.Balance.SafeBalance
+
+        </div> @*TODO: Add block confirmations count*@
     </div>
-    <div class="col-sm-3">Safe Balnce</div>
-    <div class="col-sm-9 cbs">
-        @Model.Balance.SafeBalance
 
-    </div> @*TODO: Add block confirmations count*@
+    @if (Model.TransFrom.Count > 0)
+    {
+        <h2 class="well">Send transactions</h2>
+
+
+        foreach (var item in Model.TransFrom)
+        {
+            Html.RenderPartial("~/Views/Shared/_TransactionPartial.cshtml", item);
+        }
+    }
+
+
+    @if (Model.TransTo.Count > 0)
+    {
+        <h2 class="well">Recieved transactions</h2>
+
+        foreach (var item in Model.TransTo)
+        {
+            Html.RenderPartial("~/Views/Shared/_TransactionPartial.cshtml", item);
+        }
+    }
 </div>
-
-@if (Model.TransFrom.Count > 0)
-{
-    <h2 class="well">Send transactions</h2>
-
-
-    foreach (var item in Model.TransFrom)
-    {
-        Html.RenderPartial("~/Views/Shared/_TransactionPartial.cshtml", item);
-    }
-}
-
-
-@if (Model.TransTo.Count > 0)
-{
-    <h2 class="well">Recieved transactions</h2>
-    
-    foreach (var item in Model.TransTo)
-    {
-        Html.RenderPartial("~/Views/Shared/_TransactionPartial.cshtml", item);
-    }
-}
-

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Blockche.Blockchain.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Block Transactions";
+}
+
+<h2>All Block Transactions</h2>
+
+<table class="table table-hover" style="width: 100%">
+    <thead>
+        <tr style="border-color: #E1E1E1; border-width: 1px; background-color: #F9F9F9; border-top-style: solid;">
+            <th>TxHash</th>
+            <th class="hidden-sm">Block</th>
+            <th>Age</th>
+            <th>From</th>
+            <th></th>
+            <th>To</th>
+            <th>Value</th>
+            <th>
+                <span rel="tooltip" data-placement="bottom" title="Fee "><font color="silver" size="1">[TxFee]</font></span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tx in Model)
+        {
+            <tr>
+                <td><span class="address-tag"><a href="/transactions/details/@tx.TransactionHashHex">@tx.TransactionHashHex</a></span></td>
+                <td class="hidden-sm"><a href="/blocks/details/@tx.MinedInBlockIndex">@tx.MinedInBlockIndex</a></td>
+                <td><span rel="tooltip" data-placement="bottom" title="@tx.DateCreated">@tx.DateCreated</span></td> @*TODO: Calculcate age*@
+                <td><span class="address-tag"><a href="/addresses/details/@tx.From">@tx.From</a></span></td>
+                <td> ▶ </td>
+                <td><span class="address-tag"><a href="/addresses/details/@tx.To">@tx.To</a></span></td>
+                <td>@tx.Value</td>
+                <td>@tx.Fee</td>
+            </tr>
+        }
+
+    </tbody>
+</table>

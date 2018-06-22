@@ -6,43 +6,45 @@
     ViewData["Title"] = "Block Details";
 }
 
-<h2>Block Details</h2>
 
-<div class="container row" style="margin-top:30px">
-    <div class="col-sm-3">Height:</div>
-    <div id="tx" class="col-sm-9 cbs">@Model.Index</div>
+<div class="container">
+    <h2>Block Details</h2>
 
-    <div class="col-sm-3">TimeStamp:</div>
-    <div class="col-sm-9 cbs"><span id="clock"></span> @Model.DateCreated</div>
+    <div class="container row" style="margin-top:30px">
+        <div class="col-sm-3">Height:</div>
+        <div id="tx" class="col-sm-9 cbs">@Model.Index</div>
 
-    <div class="col-sm-3">Transactions:</div>
-    <div class="col-sm-9 cbs"><a href="/blocks/txs/@Model.BlockHashHex">@Model.Transactions.Count transactions</a></div> @*TODO: Add block confirmations count*@
+        <div class="col-sm-3">TimeStamp:</div>
+        <div class="col-sm-9 cbs"><span id="clock"></span> @Model.DateCreated</div>
 
-    <div class="col-sm-3">Hash:</div>
-    <div class="col-sm-9 cbs">@Model.BlockHashHex</div>
+        <div class="col-sm-3">Transactions:</div>
+        <div class="col-sm-9 cbs"><a href="/blocks/txs/@Model.BlockHashHex">@Model.Transactions.Count transactions</a></div> @*TODO: Add block confirmations count*@
 
-    <div class="col-sm-3">Parent Hash:</div>
-    <div class="col-sm-9 cbs">
-        @if (Model.PrevBlockHashHex == null)
-        {
-            <span>Genesis block</span>
-        }
-        else
-        {
-            <a href="/blocks/details/@Model.PrevBlockIndex">@Model.PrevBlockHashHex</a>
-        }
-    </div>
+        <div class="col-sm-3">Hash:</div>
+        <div class="col-sm-9 cbs">@Model.BlockHashHex</div>
 
-    <div class="col-sm-3">Mined By:</div>
-    <div class="col-sm-9 cbs"><a href="/addresses/details/@Model.MinedBy">@Model.MinedBy</a> </div>
+        <div class="col-sm-3">Parent Hash:</div>
+        <div class="col-sm-9 cbs">
+            @if (Model.PrevBlockHashHex == null)
+            {
+                <span>Genesis block</span>
+            }
+            else
+            {
+                <a href="/blocks/details/@Model.PrevBlockIndex">@Model.PrevBlockHashHex</a>
+            }
+        </div>
 
-    <div class="col-sm-3">Difficulty:</div>
-    <div class="col-sm-9 cbs">
-        @Model.Difficulty
-    </div>
-    <div class="col-sm-3">Nonce:</div>
-    <div class="col-sm-9 cbs">
-        @Model.Nonce
+        <div class="col-sm-3">Mined By:</div>
+        <div class="col-sm-9 cbs"><a href="/addresses/details/@Model.MinedBy">@Model.MinedBy</a> </div>
+
+        <div class="col-sm-3">Difficulty:</div>
+        <div class="col-sm-9 cbs">
+            @Model.Difficulty
+        </div>
+        <div class="col-sm-3">Nonce:</div>
+        <div class="col-sm-9 cbs">
+            @Model.Nonce
+        </div>
     </div>
 </div>
-
