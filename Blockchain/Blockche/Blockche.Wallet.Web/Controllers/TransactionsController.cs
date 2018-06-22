@@ -17,7 +17,7 @@ namespace Blockche.Wallet.Web.Controllers
             return this.View(new SendTransactionInputModel());
         }
 
-       [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Send(SendTransactionInputModel model)
         {
             var privateKey = this.HttpContext.Session.GetString("PrivateKey");
@@ -55,9 +55,9 @@ namespace Blockche.Wallet.Web.Controllers
                 {
                     return this.Json(await request.Content.ReadAsStringAsync());
                 }
-            }
 
-            return new EmptyResult();
+                return this.BadRequest();
+            }
         }
     }
 }

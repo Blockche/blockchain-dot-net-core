@@ -7,7 +7,7 @@
 }
 
 <h2>Sign</h2>
-<form method="post" data-ajax="true" data-ajax-method="POST" asp-action="Send" data-ajax-success="onSuccess">
+<form method="post" data-ajax="true" data-ajax-method="POST" asp-action="Send" data-ajax-success="onSuccess" data-ajax-failure="onError">
     <label asp-for="RecipientAddress"></label>
     <th:input asp-for="RecipientAddress" class="form-control" />
 
@@ -27,6 +27,10 @@
 <script>
     function onSuccess(ev) {
         $('#content').html(`Transaction signature: ${JSON.stringify(ev)}`);
+    }
+
+    function onError(ev) {
+        $('#content').html(`Error: There is a problem with node connection`);
     }
 </script>
 
