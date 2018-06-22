@@ -15,10 +15,4 @@
     <ProjectReference Include="..\Blockche.Blockchain.Tests.Seed\Blockche.Blockchain.Tests.Seed.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="Views\Faucet\RequestResult.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-  </ItemGroup>
-
 </Project>
