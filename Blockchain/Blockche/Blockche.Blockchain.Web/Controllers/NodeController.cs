@@ -228,13 +228,16 @@ namespace Blockche.Blockchain.Web.Controllers
                     {
                         // Try to connect back the remote peer to self
                         WebRequester.Post(peerUrl + "/api/Node/peers/connect", new Peer() { NodeUrl = node.SelfUrl, IsRecursive = true });
+
+                        //THINK ABOUT THIS!!! (should be in or outside)
+                        // Synchronize the blockchain + pending transactions
+                        node.SyncChainFromPeerInfo(result);
+                        node.SyncPendingTransactionsFromPeerInfo(result);
                     }
 
 
 
-                    // Synchronize the blockchain + pending transactions
-                    node.SyncChainFromPeerInfo(result);
-                    node.SyncPendingTransactionsFromPeerInfo(result);
+                   
 
                     return Ok(new { message = "Connected to peer: " + peerUrl });
                 }

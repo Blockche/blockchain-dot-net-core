@@ -29,7 +29,10 @@ namespace Blockche.Blockchain.ConsoleApp
                         "http://localhost:5004"
                     };
 
+            string explorerUrl = "http://localhost:7343";
+
             NodeInstanceRunner.StartMultipleInstances(SampleUrls);
+          //  NodeInstanceRunner.ConnectBetweenInstances(SampleUrls, explorerUrl);
 
             //var test = DecompressPublicKey(Faucet.FaucetPublicKey);
 
