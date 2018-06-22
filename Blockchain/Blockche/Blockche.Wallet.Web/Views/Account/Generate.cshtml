@@ -5,10 +5,9 @@
 
 <h2>Generate</h2>
 
-<form method="post" data-ajax="true" data-ajax-method="POST" asp-action="GenerateAccount" data-ajax-success="onSuccess">
-    <div class="row">
-        <textarea name="seed" id="seed" rows="10" cols="120"></textarea>
-    </div>
+<form method="post" data-ajax="true" data-ajax-method="POST" asp-action="GenerateAccount" data-ajax-success="onSuccess" class="row">
+    <label class="col-sm-12">Random seed material from your mouse</label>
+    <textarea name="seed" id="seed" rows="10" cols="120" class="col-sm-12"></textarea>
     <input type="submit" name="submit" value="Generate new account" class="btn btn-default" />
 </form>
 
@@ -27,10 +26,10 @@
 @section Scripts {
 
     <script>
-        $(function() {
+        $(function () {
             let randomString = '';
             var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            $(document).mousemove(function(event) {
+            $(document).mousemove(function (event) {
                 if (Math.random() >= 0.01) {
                     randomString += possible.charAt(event.pageX % possible.length);
 
