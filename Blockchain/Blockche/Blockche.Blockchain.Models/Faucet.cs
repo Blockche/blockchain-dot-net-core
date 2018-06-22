@@ -15,7 +15,6 @@ namespace Blockche.Blockchain.Models
 
         public static Transaction GetGenesisFaucetTransaction()
         {
-            
             var signature = Config.GetNullSignatureHex();
 
             var tran = new Transaction(
@@ -43,6 +42,7 @@ namespace Blockche.Blockchain.Models
              new List<Transaction> { GetGenesisFaucetTransaction() }, // transactions array
              0,           // currentDifficulty
              null,   // previous block hash
+             null,
              Config.NullAddress, // mined by (address)
              null,   // block data hash
              0,           // nonce

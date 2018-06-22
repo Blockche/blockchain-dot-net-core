@@ -14,7 +14,7 @@
     <div class="col-sm-9 cbs">
         @if (Model.MinedInBlockIndex.HasValue)
         {
-            <a href="/blocks/@Model.MinedInBlockIndex">@(Model.MinedInBlockIndex.ToString() ?? "Not Mined")</a>
+            <a href="/blocks/details/@Model.MinedInBlockIndex">@(Model.MinedInBlockIndex.ToString() ?? "Not Mined")</a>
         }
         else
         {

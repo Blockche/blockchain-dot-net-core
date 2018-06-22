@@ -56,8 +56,15 @@ namespace Blockche.Blockchain.Models
         public Transaction GetTransactionByHash(string tranHash)
         {
             var allTransactions = this.GetAllTransactions();
-            var tran = allTransactions.FirstOrDefault(t => CryptoUtils.BytesToHex(t.TransactionDataHash) == tranHash);
+            var tran = allTransactions.FirstOrDefault(t => t.TransactionHashHex == tranHash);
             return tran;
+        }
+
+        public Block GetBlockByIndex(int index)
+        {
+            var blocks = this.Blocks;
+            var block = blocks.FirstOrDefault(b => b.Index == index);
+            return block;
         }
 
         public IEnumerable<Transaction> GetTransactionHistory(string address)
@@ -312,14 +319,15 @@ namespace Blockche.Blockchain.Models
             clonedTransactions.Insert(0, coinbaseTransaction);
 
             // Prepare the next block candidate (block template)
-            var prevBlockHash = this.Blocks[this.Blocks.Count - 1].BlockHash;
+            var previousBlock = this.Blocks[this.Blocks.Count - 1];
 
             //TODO: test that with Date null??
             var nextBlockCandidate = new Block(
                 nextBlockIndex,
                 clonedTransactions.ToList(),
                 this.CurrentDifficulty,
-                prevBlockHash,
+                previousBlock.BlockHash,
+                previousBlock.Index,
                 minerAddress
             );
 
