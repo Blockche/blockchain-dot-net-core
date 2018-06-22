@@ -48,7 +48,7 @@ namespace Blockche.Blockchain.Models
 
         public IEnumerable<Transaction> GetAllTransactions()
         {
-            List<Transaction> transactions = this.GetConfirmedTransactions().ToList();
+            var transactions = this.GetConfirmedTransactions().ToList();
             transactions.AddRange(this.PendingTransactions);
             return transactions;
         }

@@ -5,7 +5,6 @@ using System;
 
 namespace Blockche.Blockchain.Models
 {
-
     [Serializable]
     public class Transaction
     {
@@ -41,7 +40,6 @@ namespace Blockche.Blockchain.Models
             this.TransferSuccessful = transferSuccessful;
         }
 
-
         public void CalculateDataHash()
         {
             var tranData = new
@@ -50,35 +48,34 @@ namespace Blockche.Blockchain.Models
                 to = this.To,
                 value = this.Value,
                 fee = this.Fee,
-                dateCreated = this.DateCreated, //test if that is null
+                dateCreated = this.DateCreated, // test if that is null
                 data = this.Data,
                 senderPubKey = this.SenderPubKey
             };
 
-
-
-            var tranDataJSON = JsonConvert.SerializeObject(tranData);
-            this.TransactionDataHash = CryptoUtils.CalcSHA256(tranDataJSON);
+            var tranDataJson = JsonConvert.SerializeObject(tranData);
+            this.TransactionDataHash = CryptoUtils.CalcSHA256(tranDataJson);
         }
 
         public string From { get; set; } // Sender address: 40 hex digits
         public string To { get; set; } // Recipient address: 40 hex digits
         public long Value { get; set; } // Transfer value: integer (int or BigInteger) ??
-        public int Fee { get; set; } // Mining fee: integer
+        public int Fee { get; set; } // Mining fee
         public string DateCreated { get; set; } // ISO-8601 string
         public string Data { get; set; } // Optional data (e.g. payload or comments): string
-        public string SenderPubKey { get; set; } // 65 hex digits || byte[]
-        public byte[] TransactionDataHash { get; set; } // 64 hex digits || byte[]
+        public string SenderPubKey { get; set; } // 65 hex digits
+        public byte[] TransactionDataHash { get; set; }
+        public string TransactionHashHex => CryptoUtils.BytesToHex(this.TransactionDataHash ?? new byte[0]); // 64 hex digits
         public string[] SenderSignature { get; set; } // hex_number[2][64]
-        public int? MinedInBlockIndex { get; set; } // integer
-        public bool TransferSuccessful { get; set; } // bool
+        public int? MinedInBlockIndex { get; set; } 
+        public bool TransferSuccessful { get; set; }
 
         public bool IsSignatureValid { get; private set; } // bool
 
         public void SetSignature(string senderPrivKeyHex)
         {
-            //get private key as hex
-            BigInteger privateKey = new BigInteger(senderPrivKeyHex, 16);
+            // convert pk to big integer
+            var privateKey = new BigInteger(senderPrivKeyHex, 16);
 
             var sign = CryptoUtils.SignData(privateKey, this.TransactionDataHash);
             this.SenderSignature = CryptoUtils.SignatureByBigInt(sign);
@@ -94,11 +91,6 @@ namespace Blockche.Blockchain.Models
         public bool VerifySignature()
         {
             return this.IsSignatureValid;
-
         }
-
-
-
-
     }
 }

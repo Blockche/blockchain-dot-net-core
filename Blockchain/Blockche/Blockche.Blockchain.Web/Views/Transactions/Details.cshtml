@@ -1,0 +1,52 @@
+﻿@model Blockche.Blockchain.Models.Transaction
+
+@{
+    ViewData["Title"] = "Transaction Details";
+}
+
+<h2>Transaction Information</h2>
+
+<div class="container row" style="margin-top:30px">
+    <div class="col-sm-3">TxHash:</div>
+    <div id="tx" class="col-sm-9 cbs" style="word-wrap: break-word;">@Model.TransactionHashHex</div>
+    <div class="col-sm-3">TxReceipt Status:</div><div class="col-sm-9 cbs"><span title="A Status code indicating if the top-level call succeeded or failed"><font color="@(Model.TransferSuccessful ? "green" : "")">@(Model.MinedInBlockIndex == null ? "Pending" : Model.TransferSuccessful ? "Successful" : "Failed")</font></span></div>
+    <div class="col-sm-3">Block Height:</div>
+    <div class="col-sm-9 cbs">
+        @if (Model.MinedInBlockIndex.HasValue)
+        {
+            <a href="/blocks/@Model.MinedInBlockIndex">@(Model.MinedInBlockIndex.ToString() ?? "Not Mined")</a>
+        }
+        else
+        {
+
+            <span>Not Mined</span>
+        }
+
+    </div> @*TODO: Add block confirmations count*@
+    <div class="col-sm-3">TimeStamp:</div>
+    <div class="col-sm-9 cbs"><span id="clock"></span> @Model.DateCreated</div>
+    <div class="col-sm-3">From:</div>
+    <div class="col-sm-9 cbs" style="word-wrap: break-word;"><a href="/address/@Model.From">@Model.From</a></div>
+    <div class="col-sm-3">To:</div>
+    <div class="col-sm-9 cbs"><a href="/address/@Model.To" class="wordwrap">@Model.To</a> </div>
+    <div class="col-sm-3">Value:</div>
+    <div class="col-sm-9 cbs">
+        <span title="The amount of NoCoin to be transferred to the recipient with the transaction">
+            @Model.Value
+        </span>
+    </div>
+    <div class="col-sm-3">Fee:</div>
+    <div class="col-sm-9 cbs">
+        <span title="The amount of Fee supplied for this transaction to happen">
+            @Model.Fee
+        </span>
+    </div>
+
+    <div class="col-sm-3">Additional Data:</div>
+    <div class="col-sm-9 cbs">
+        <span title="Comment or Additional transaction Data">
+            @Model.Data
+        </span>
+    </div>
+</div>
+

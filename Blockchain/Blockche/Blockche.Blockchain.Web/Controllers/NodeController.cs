@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Blockche.Blockchain.Common;
 using Blockche.Blockchain.Models;
 using Blockche.Blockchain.Web.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -220,7 +217,7 @@ namespace Blockche.Blockchain.Web.Controllers
                     //    if (node.Peers[nodeId.Key] == peerUrl)
                     //        node.Peers.Remove(nodeId.Key);
 
-                    
+
 
 
 
@@ -232,7 +229,7 @@ namespace Blockche.Blockchain.Web.Controllers
                         // Try to connect back the remote peer to self
                         WebRequester.Post(peerUrl + "/api/Node/peers/connect", new Peer() { NodeUrl = node.SelfUrl, IsRecursive = true });
                     }
-                  
+
 
 
                     // Synchronize the blockchain + pending transactions
@@ -247,7 +244,7 @@ namespace Blockche.Blockchain.Web.Controllers
             {
 
                 Console.WriteLine("Error: connecting to peer: {0} failed", peerUrl);
-                return BadRequest(string.Format( "Cannot connect to peer: {0}, due to {1}", peerUrl, ex.Message));
+                return BadRequest(string.Format("Cannot connect to peer: {0}, due to {1}", peerUrl, ex.Message));
 
             }
 
@@ -270,14 +267,15 @@ namespace Blockche.Blockchain.Web.Controllers
         {
             var blockCandidate = this.GetNodeSingleton().Chain.GetMiningJob(address);
 
-         //retun candidate block
-            return Ok(new {
-                index= blockCandidate.Index,
-                transactionsIncluded= blockCandidate.Transactions.Count,
+            //retun candidate block
+            return Ok(new
+            {
+                index = blockCandidate.Index,
+                transactionsIncluded = blockCandidate.Transactions.Count,
                 difficulty = blockCandidate.Difficulty,
                 expectedReward = blockCandidate.Transactions[0].Value,
-                rewardAddress= blockCandidate.Transactions[0].To,
-                blockDataHash =CryptoUtils.BytesToHex( blockCandidate.BlockDataHash)
+                rewardAddress = blockCandidate.Transactions[0].To,
+                blockDataHash = CryptoUtils.BytesToHex(blockCandidate.BlockDataHash)
             });
         }
 
@@ -297,13 +295,14 @@ namespace Blockche.Blockchain.Web.Controllers
                     CryptoUtils.HexToBytes(block.BlockDataHash), block.DateCreated, block.Nonce, CryptoUtils.HexToBytes(block.BlockHash));
                 this.GetNodeSingleton().NotifyPeersAboutNewBlock();
 
-                return Ok(new { 
+                return Ok(new
+                {
 
                     message = string.Format("Block accepted, reward paid: {0} microcoins", result.Transactions[0].Value)
 
-                    });
+                });
 
-                
+
             }
             catch (Exception ex)
             {
@@ -311,7 +310,7 @@ namespace Blockche.Blockchain.Web.Controllers
             }
         }
 
-        
+
 
 
 
