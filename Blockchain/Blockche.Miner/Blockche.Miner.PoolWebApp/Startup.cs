@@ -58,7 +58,6 @@ namespace Blockche.Miner.PoolWebApp
             }
 
             app.UseHttpsRedirection();
-            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
