@@ -35,7 +35,7 @@ namespace Blockche.Blockchain.Web.Controllers
             }
 
             bool isValid = true;
-            string msg = "You successfully requested 1000 NoCoins";
+            string msg = "You successfully requested 500000 NoCoins";
 
             var daylyReuestCountKey = model.Address + "->" + DateTime.UtcNow.ToShortDateString();
 
