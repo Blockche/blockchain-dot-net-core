@@ -81,7 +81,6 @@ namespace Blockche.Blockchain.Common
             var result = new byte[digest.GetDigestSize()];
             digest.DoFinal(result, 0);
             return BytesToHex(result);
-
         }
 
         public static string CalcRIPEMD160(byte[] keyBytes)
@@ -290,29 +289,11 @@ namespace Blockche.Blockchain.Common
 
         public static string PrivateKeyToAddress(string privKeyHex)
         {
-            Console.WriteLine("Existing private key --> public key --> address");
-            Console.WriteLine("-----------------------------------------------");
-
             var privateKey = new BigInteger(privKeyHex, 16);
-            Console.WriteLine("Private key (hex): " + privateKey.ToString(16));
-            Console.WriteLine("Private key: " + privateKey.ToString(10));
-
             var pubKey = GetPublicKeyFromPrivateKey(privateKey);
-            Console.WriteLine("Public key: ({0}, {1})",
-                pubKey.XCoord.ToBigInteger().ToString(10),
-                pubKey.YCoord.ToBigInteger().ToString(10));
-
             var pubKeyCompressed = EncodeECPointHexCompressed(pubKey);
-            Console.WriteLine("Public key (compressed): " + pubKeyCompressed);
-
             var addr = CalcRIPEMD160(pubKeyCompressed);
-            Console.WriteLine("Blockchain address: " + addr);
             return addr;
-        }
-
-        private static void ExistingPrivateKeyToAddress(string privKeyHex)
-        {
-            PrivateKeyToAddress(privKeyHex);
         }
 
         public static string GetPublicKeyHashFromPrivateKey(string senderPrivKeyHex)
@@ -365,18 +346,12 @@ namespace Blockche.Blockchain.Common
         public static void SignAndVerifyTransaction(string recipientAddress, int value, int fee,
            string iso8601datetime, string senderPrivKeyHex)
         {
-            Console.WriteLine("Generate and sign a transaction");
-            Console.WriteLine("-------------------------------");
-
-            Console.WriteLine("Sender private key:", senderPrivKeyHex);
             var privateKey = new BigInteger(senderPrivKeyHex, 16);
 
             var pubKey = GetPublicKeyFromPrivateKey(privateKey);
             var senderPubKeyCompressed = EncodeECPointHexCompressed(pubKey);
-            Console.WriteLine("Public key (compressed): " + senderPubKeyCompressed);
 
             var senderAddress = CalcRIPEMD160(senderPubKeyCompressed);
-            Console.WriteLine("Blockchain address: " + senderAddress);
 
             var tran = new
             {
@@ -389,14 +364,10 @@ namespace Blockche.Blockchain.Common
 
             };
             var tranJson = JsonConvert.SerializeObject(tran);
-            Console.WriteLine("Transaction (JSON): {0}", tranJson);
 
             var tranHash = CalcSHA256(tranJson);
-            Console.WriteLine("Transaction hash(sha256): {0}", BytesToHex(tranHash));
 
             var tranSignature = SignData(privateKey, tranHash);
-            Console.WriteLine("Transaction signature: [{0}, {1}]",
-                tranSignature[0].ToString(16), tranSignature[1].ToString(16));
 
             var tranSigned = new
             {
@@ -414,7 +385,6 @@ namespace Blockche.Blockchain.Common
             };
 
             var signedTranJson = JsonConvert.SerializeObject(tranSigned, Formatting.Indented);
-            Console.WriteLine("Signed transaction (JSON):");
             Console.WriteLine(signedTranJson);
 
             //verify transaction
