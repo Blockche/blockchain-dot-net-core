@@ -17,7 +17,7 @@ namespace Blockche.Miner.PoolWebApp.Mining
     public class JobProducer
     {
         private const string Address = "1234567890123456789012345678901234567890";
-        private const string NodeAddress = "http://localhost:59415";
+        private const string NodeAddress = "http://nochain-node-1.azurewebsites.net";
 
         private const string SubmitUrlFormat = "{0}/api/node/mining/submit-mined-block";
         private const string GetMiningJobFormat = "{0}/api/node/mining/get-mining-job/{1}";
