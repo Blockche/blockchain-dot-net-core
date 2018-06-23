@@ -32,7 +32,7 @@ namespace Blockche.Miner.ConsoleApp
             this.rnd = new Random(seed);
             this.buffer = new byte[8];
 
-            this.hashRateReportTimer = new System.Timers.Timer(5000);
+            this.hashRateReportTimer = new System.Timers.Timer(2000);
             this.hashRateReportTimer.Elapsed += (s, e) => this.jobProducer.ReportHashrate(this.hashRate).GetAwaiter().GetResult();
         }
 
@@ -40,10 +40,12 @@ namespace Blockche.Miner.ConsoleApp
         {
             this.logger.Log($"[{this.seed}] Miner start");
 
+            this.isStarted = true;
+
             this.jobProducer.JobCreated -= this.JobCreatedHandler;
             this.jobProducer.JobCreated += this.JobCreatedHandler;
 
-            this.isStarted = true;
+            this.jobProducer.GetJob();
         }
 
         public void Stop()
@@ -83,6 +85,7 @@ namespace Blockche.Miner.ConsoleApp
 
             while (this.isMining && this.isStarted)
             {
+                this.operationsCount++;
                 if (IsValidHashNonce(job))
                 {
                     this.UpdateHashrate();

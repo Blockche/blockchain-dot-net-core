@@ -13,6 +13,9 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
         private readonly string worker;
 
         private readonly HubConnection connection;
+        private readonly object objLock = new object();
+
+        private JobDTO lastJob = null;
 
         public PoolJobProducer(IEnumerable<string> poolAddresses, string user, string worker)
         {
@@ -29,12 +32,21 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
                     })
                     .Build();
 
-                this.connection.On<JobDTO>("NewJob", j => JobCreated?.Invoke(this, new JobCreatedEventArgs { Job = j }));
+                this.connection.On<JobDTO>("NewJob", j =>
+                {
+                    lastJob = j;
+                    JobCreated?.Invoke(this, new JobCreatedEventArgs { Job = j });
+                });
                 
                 this.connection.StartAsync().GetAwaiter().GetResult();
 
                 break;
             }
+        }
+
+        public Task<JobDTO> GetJob()
+        {
+            return Task.FromResult(this.lastJob);
         }
 
         public event EventHandler<JobCreatedEventArgs> JobCreated;

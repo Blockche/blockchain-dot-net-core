@@ -7,6 +7,7 @@
     var messages = [];
     var tempOperations = 0;
     var tempStartClock = 0;
+    var submitedBlocks = 0;
 
     var submitJob = function (job) {
         console.warn('Not initialized yet!');
@@ -43,13 +44,20 @@
                     console.log('Report hashrate -> ' + hashRate);
                     connection.invoke('ReportHashrate', hashRate).catch(err => console.error(err.toString()));
                 }
-            }, 5000);
+            }, 1000);
+
+            setInterval(updateHashRate, 1000);
 
             submitJob = function (job) {
                 console.log('submit job -> ' + job.blockHash);
 
                 job.user = user;
                 job.worker = worker;
+
+                submitedBlocks++;
+                $('#submitedblocks').text(submitedBlocks);
+
+                updateHashRate();
 
                 connection.invoke('SubmitJob', job).catch(err => console.error(err.toString()));
             }
@@ -84,7 +92,9 @@
 
         var elapsed = new Date() - startedAt;
         hashRate = operations / elapsed;
-        $('#hashrate').text(hashRate);
+        if (hashRate) {
+            $('#hashrate').text(hashRate);
+        }
     }
 
     function newJobHandler(newJob) {

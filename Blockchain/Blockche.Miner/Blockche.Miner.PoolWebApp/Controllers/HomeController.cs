@@ -40,5 +40,14 @@ namespace Blockche.Miner.PoolWebApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult DashboardJson()
+        {
+            var result = new DashboardModel();
+            result.TopMiners = MinersManager.GetTopMiners();
+            result.Report = MinersManager.GetReport();
+            result.MinedJobs = MinersManager.GetLastMinedJobs();
+            return this.Json(result);
+        }
     }
 }
