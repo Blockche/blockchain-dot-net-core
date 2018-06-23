@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Blockche.Wallet.Web.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Blockche.Wallet.Web.Controllers
 {
@@ -12,6 +13,7 @@ namespace Blockche.Wallet.Web.Controllers
     {
         public IActionResult Index()
         {
+            this.HttpContext.Session.SetString("NodeUrl", "http://localhost:55395");
             return View();
         }
 

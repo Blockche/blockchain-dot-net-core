@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Blockche Wallet</title>
+    <title>@ViewData["Title"] - NoChain Wallet</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -27,19 +27,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Blockche Wallet</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">NoChain Wallet</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Account" asp-action="Generate">Generate new account</a></li>
-                    <li><a asp-area="" asp-controller="Account" asp-action="Import">Import account</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="Generate">Generate</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="Import">Import</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="GenerateKeystore">Generate keystore</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="ImportKeystore">Import keystore</a></li>
                     <li><a asp-area="" asp-controller="Transactions" asp-action="Send">Send Transaction</a></li>
                 </ul>
                 @if (!string.IsNullOrEmpty(Context.Session.GetString("Address")))
                 {
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a title="@Context.Session.GetString("Address")" href="/">Logged in with @Context.Session.GetString("Address")?.Replace(Context.Session.GetString("Address").Substring(10), "...")</a>
+                            <a title="@Context.Session.GetString("Address")" href="/balances/balance">Logged in with @Context.Session.GetString("Address")?.Replace(Context.Session.GetString("Address").Substring(10), "...")</a>
                         </li>
                         <li>
                             <form asp-action="Logout" asp-controller="Account" method="post">
@@ -58,7 +60,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - Blockche Wallet</p>
+            <p>&copy; 2018 - NoChain Wallet</p>
         </footer>
     </div>
 

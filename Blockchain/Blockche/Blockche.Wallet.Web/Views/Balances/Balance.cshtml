@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Http
+@model Blockche.Blockchain.Models.AccountBalance
+@{
+    ViewData["Title"] = "Balance";
+}
+
+<h2>Balance</h2>
+
+<h2 class="well">Account Balances of @Context.Session.GetString("Address")</h2>
+<div class="container row" style="margin-top:30px">
+    <div class="col-sm-3">Confirmed Balance:</div>
+    <div id="tx" class="col-sm-9 cbs" style="word-wrap: break-word;">@Model.ConfirmedBalance</div>
+    <div class="col-sm-3">Pending Balance</div>
+    <div class="col-sm-9 cbs"> @Model.PendingBalance </div>
+    <div class="col-sm-3">Safe Balnce</div>
+    <div class="col-sm-9 cbs"> @Model.SafeBalance </div>
+</div>
