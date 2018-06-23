@@ -13,7 +13,7 @@ namespace Blockche.Wallet.Web.Controllers
     {
         public IActionResult Index()
         {
-            this.HttpContext.Session.SetString("NodeUrl", "http://localhost:55395");
+            this.HttpContext.Session.SetString("NodeUrl", "http://localhost:59415");
             return View();
         }
 
