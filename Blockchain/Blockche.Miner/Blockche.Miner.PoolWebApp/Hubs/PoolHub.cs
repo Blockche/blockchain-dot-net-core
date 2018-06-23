@@ -28,10 +28,14 @@ namespace Blockche.Miner.PoolWebApp.Hubs
             return Task.CompletedTask;
         }
 
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
             MinersManager.AddMiner(this.XUser, this.XWorker);
-            return base.OnConnectedAsync();
+            if (MinersManager.LastJob != null)
+            {
+                await this.Clients.Caller.SendAsync("NewJob", MinersManager.LastJob);
+            }
+            await base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)

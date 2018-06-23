@@ -45,5 +45,7 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
             Console.WriteLine($"Hash rate is -> {hashRate}");
             return Task.CompletedTask;
         }
+
+        public Task<JobDTO> GetJob() => Task.FromResult(BuildJobCreatedArgs().Job);
     }
 }

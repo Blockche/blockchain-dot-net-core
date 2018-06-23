@@ -16,9 +16,10 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
         private readonly string minerAddress;
         private readonly IEnumerable<string> nodeUrls;
         private readonly Timer timer;
-        private const int TimerInterval = 1000 * 5;
+        private const int TimerInterval = 3000;
 
-        private string lastJob;
+        private string lastJobSerialized;
+        private JobDTO lastJob;
 
         public HttpJobProducer(string minerAddress, IEnumerable<string> nodeUrls)
         {
@@ -51,6 +52,11 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
         {
             Console.WriteLine($"Hash rate is -> {hashRate}");
             return Task.CompletedTask;
+        }
+
+        public Task<JobDTO> GetJob()
+        {
+            return Task.FromResult(this.lastJob);
         }
 
         public async Task SubmitJob(JobDTO job)
@@ -87,12 +93,13 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
             }
 
             var serializedNewJob = JsonConvert.SerializeObject(newJob);
-            if (serializedNewJob == this.lastJob)
+            if (serializedNewJob == this.lastJobSerialized)
             {
                 return;
             }
 
-            this.lastJob = serializedNewJob;
+            this.lastJobSerialized = serializedNewJob;
+            this.lastJob = newJob;
             this.JobCreated?.Invoke(this, new JobCreatedEventArgs { Job = newJob });
         }
 

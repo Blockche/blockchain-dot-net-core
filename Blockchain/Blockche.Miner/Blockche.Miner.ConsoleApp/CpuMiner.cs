@@ -32,18 +32,32 @@ namespace Blockche.Miner.ConsoleApp
             this.rnd = new Random(seed);
             this.buffer = new byte[8];
 
-            this.hashRateReportTimer = new System.Timers.Timer(5000);
-            this.hashRateReportTimer.Elapsed += (s, e) => this.jobProducer.ReportHashrate(this.hashRate).GetAwaiter().GetResult();
+            this.hashRateReportTimer = new System.Timers.Timer(2000);
+            this.hashRateReportTimer.Elapsed += (s, e) =>
+            {
+                if (this.hashRate > 0)
+                {
+                    this.logger.Log($"[{this.seed}] Hashrate -> " + this.hashRate);
+                    this.jobProducer.ReportHashrate(this.hashRate).GetAwaiter().GetResult();
+                }
+            };
+            this.hashRateReportTimer.Start();
         }
 
         public void Start()
         {
             this.logger.Log($"[{this.seed}] Miner start");
 
+            this.isStarted = true;
+
             this.jobProducer.JobCreated -= this.JobCreatedHandler;
             this.jobProducer.JobCreated += this.JobCreatedHandler;
 
-            this.isStarted = true;
+            var job = this.jobProducer.GetJob().GetAwaiter().GetResult();
+            if (job != null)
+            {
+                this.JobCreatedHandler(null, new JobCreatedEventArgs { Job = job });
+            }
         }
 
         public void Stop()
@@ -83,6 +97,7 @@ namespace Blockche.Miner.ConsoleApp
 
             while (this.isMining && this.isStarted)
             {
+                this.operationsCount++;
                 if (IsValidHashNonce(job))
                 {
                     this.UpdateHashrate();
@@ -99,7 +114,16 @@ namespace Blockche.Miner.ConsoleApp
 
         private void UpdateHashrate()
         {
-            this.hashRate = (decimal)this.operationsCount / (DateTime.UtcNow - this.operationsStart).Milliseconds;
+            try
+            {
+                if (this.operationsCount > 0)
+                {
+                    this.hashRate = (decimal)this.operationsCount / (DateTime.UtcNow - this.operationsStart).Milliseconds;
+                }
+            }
+            catch (DivideByZeroException)
+            {
+            }
 
             this.operationsCount = 0;
             this.operationsStart = DateTime.UtcNow;

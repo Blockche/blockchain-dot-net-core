@@ -20,20 +20,17 @@ namespace Blockche.Miner.PoolWebApp.Controllers
             return this.View();
         }
 
-        public async Task<IActionResult> WebMiner([FromServices]JobProducer jobProducer, [FromServices]IHubContext<PoolHub> hub)
+        public IActionResult Blocks()
         {
-            await hub.Clients.All.SendAsync("ReceiveMessage", Guid.NewGuid());
-            return View();
+            return this.View();
         }
 
-        public IActionResult Contact()
+        public IActionResult Users()
         {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return this.View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult WebMiner()
         {
             return View();
         }
@@ -42,6 +39,15 @@ namespace Blockche.Miner.PoolWebApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult DashboardJson()
+        {
+            var result = new DashboardModel();
+            result.TopMiners = MinersManager.GetTopMiners();
+            result.Report = MinersManager.GetReport();
+            result.MinedJobs = MinersManager.GetLastMinedJobs();
+            return this.Json(result);
         }
     }
 }

@@ -8,16 +8,20 @@ namespace Blockche.Blockchain.Common
 {
     public class Config
     {
-        public const int StartDifficulty = 5;
+        public const int StartDifficulty = 3;
         public const int MinTransactionFee = 10;
         public const int MaxTransactionFee = 1000000;
         public const int BlockReward = 5000000;
         public const long MaxTransferValue = 10000000000000;
         public const int SafeConfirmCount = 3;
 
+        public const int TargetSecondsBetweenBlocks = 30;
+        public const double AllowedOffsetPercentage = 20;
+        public const double MinTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 - (AllowedOffsetPercentage / 100));
+        public const double MaxTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 + (AllowedOffsetPercentage / 100));
+
         public const string NullAddress = "0000000000000000000000000000000000000000";
-        public const string NullPubKey = "00000000000000000000000000000000000000000000000000000000000000000";
-                                          
+        public const string NullPubKey = "00000000000000000000000000000000000000000000000000000000000000000";                                          
 
         public const string NullSignaturePublicKey = "0000000000000000000000000000000000000000000000000000000000000000";
         public const string NullSignaturePrivateKey = NullSignaturePublicKey;

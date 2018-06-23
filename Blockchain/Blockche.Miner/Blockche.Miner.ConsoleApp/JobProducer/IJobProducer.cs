@@ -11,5 +11,7 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
         Task SubmitJob(JobDTO job);
 
         Task ReportHashrate(decimal hashRate);
+
+        Task<JobDTO> GetJob();
     }
 }

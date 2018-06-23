@@ -16,14 +16,6 @@ namespace Blockche.Miner.ConsoleApp
 
         public static void Main(string[] args)
         {
-            // read config sources
-            // setup env
-            // setup logger
-
-            new PoolJobProducer(new[] { "http://localhost:50307" }, "user1", "worker1");
-            Console.ReadLine();
-            return;
-
             var config = new ConsoleArgsConfigProvider();
 
             IJobProducer jobProducer;

@@ -44,20 +44,28 @@ namespace Blockche.Miner.ConsoleApp.Config
                     this.IsTest = true;
                 }
             }
+
+            Console.WriteLine($"ThreadsCount: {this.ThreadsCount}");
+            Console.WriteLine($"JobProducerUrls: {string.Join(", ", this.JobProducerUrls)}");
+            Console.WriteLine($"Address: {this.Address}");
+            Console.WriteLine($"UsePool: {this.UsePool}");
+            Console.WriteLine($"User: {this.User}");
+            Console.WriteLine($"Worker: {this.Worker}");
+            Console.WriteLine($"IsTest: {this.IsTest}");
         }
 
         public int ThreadsCount { get; } = 1;
 
-        public IEnumerable<string> JobProducerUrls { get; } = new List<string>() { "http://localhost:59415" };
+        public IEnumerable<string> JobProducerUrls { get; } = new List<string>() { "http://localhost:50307" };
 
-        public string Address { get; set; } = "0x0000000000000000000000000000000000000000";
+        public string Address { get; set; } = "0000000000000000000000000000000000000000";
 
-        public bool UsePool { get; } = false;
+        public bool UsePool { get; } = true;
 
         public bool IsTest { get; } = false;
 
-        public string User { get; set; }
+        public string User { get; set; } = "Hardcore";
 
-        public string Worker { get; set; }
+        public string Worker { get; set; } = "Slave1";
     }
 }

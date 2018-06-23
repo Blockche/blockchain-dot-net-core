@@ -16,7 +16,7 @@ namespace Blockche.Miner.PoolWebApp.Mining
 {
     public class JobProducer
     {
-        private const string Address = "0x1234567890123456789012345678901234567890";
+        private const string Address = "1234567890123456789012345678901234567890";
         private const string NodeAddress = "http://localhost:59415";
 
         private const string SubmitUrlFormat = "{0}/api/node/mining/submit-mined-block";
@@ -74,6 +74,7 @@ namespace Blockche.Miner.PoolWebApp.Mining
                 var response = await this.http.PostAsync(fullUrl, payload);
                 if (response.IsSuccessStatusCode)
                 {
+                    MinersManager.AddMinedBlock(job);
                     this.newJobChecker.Interval = NewJobCheckerInterval;
                     await this.OnNewJobCheckerIntervalAsync();
                     break;
@@ -126,6 +127,9 @@ namespace Blockche.Miner.PoolWebApp.Mining
             }
 
             this.lastJob = serializedNewJob;
+
+            MinersManager.LastDifficulty = newJob.Difficulty;
+            MinersManager.LastJob = newJob;
 
             var ctx = this.serviceProvider.GetRequiredService<IHubContext<PoolHub>>();
             await ctx.Clients.All.SendAsync("NewJob", newJob);

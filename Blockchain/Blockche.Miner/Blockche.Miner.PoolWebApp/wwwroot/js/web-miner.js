@@ -7,6 +7,8 @@
     var messages = [];
     var tempOperations = 0;
     var tempStartClock = 0;
+    var submitedBlocks = 0;
+    var lastJobs = [];
 
     var submitJob = function (job) {
         console.warn('Not initialized yet!');
@@ -43,13 +45,37 @@
                     console.log('Report hashrate -> ' + hashRate);
                     connection.invoke('ReportHashrate', hashRate).catch(err => console.error(err.toString()));
                 }
-            }, 5000);
+            }, 1000);
+
+            setInterval(updateHashRate, 1000);
 
             submitJob = function (job) {
-                console.log('submit job!');
+                console.log('submit job -> ' + job.blockHash);
 
                 job.user = user;
                 job.worker = worker;
+
+                submitedBlocks++;
+                lastJobs.unshift(job);
+                if (lastJobs.length > 10) {
+                    lastJobs.pop();
+                }
+
+                $('#submitedblocks').text(submitedBlocks);
+                var jobs = '';
+                index = 1;
+                lastJobs.forEach(function (job) {
+                    jobs += '<tr>';
+                    jobs += '<td>' + (index++) + '</td>';
+                    jobs += '<td>' + (job.user) + '</td>';
+                    jobs += '<td>' + (job.worker) + '</td>';
+                    jobs += '<td>' + (job.blockHash) + '</td>';
+                    jobs += '</tr>';
+                });
+                $('#last-blocks-grid').html(jobs);
+
+
+                updateHashRate();
 
                 connection.invoke('SubmitJob', job).catch(err => console.error(err.toString()));
             }
@@ -71,25 +97,6 @@
         setTimeout(mine, 0);
     }
 
-    function pad(num) {
-        var norm = Math.floor(Math.abs(num));
-        return (norm < 10 ? '0' : '') + norm;
-    }
-
-    function getIsoDate(date) {
-        var tzo = -date.getTimezoneOffset(),
-            dif = tzo >= 0 ? '+' : '-';
-
-        return date.getFullYear() +
-            '-' + pad(date.getMonth() + 1) +
-            '-' + pad(date.getDate()) +
-            'T' + pad(date.getHours()) +
-            ':' + pad(date.getMinutes()) +
-            ':' + pad(date.getSeconds()) +
-            dif + pad(tzo / 60) +
-            ':' + pad(tzo % 60);
-    }
-
     function updateHashRate() {
         var startedAt = tempStartClock;
         var operations = tempOperations;
@@ -103,13 +110,15 @@
 
         var elapsed = new Date() - startedAt;
         hashRate = operations / elapsed;
-        $('#hashrate').text(hashRate);
+        if (hashRate) {
+            $('#hashrate').text(hashRate);
+        }
     }
 
     function newJobHandler(newJob) {
-        console.log('new job!');
+        console.log('new job -> diff: ' + newJob.difficulty);
         job = newJob;
-        job.dateCreated = getIsoDate(new Date());
+        job.dateCreated = new Date().toISOString();
 
         updateHashRate();
 
@@ -121,7 +130,7 @@
     }
 
     function isValidJob(job) {
-        for (var i = 0; i < job.difficulty - 2; i++) {
+        for (var i = 0; i < job.difficulty; i++) {
             if (job.blockHash[i] !== '0') {
                 return false;
             }
