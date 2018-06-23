@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blockche.Miner.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,9 +29,9 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
             this.JobCreated.Invoke(this, this.BuildJobCreatedArgs());
         }
 
-        public Task SubmitJob(JobDTO job, int miner)
+        public Task SubmitJob(JobDTO job)
         {
-            Console.WriteLine($"Job submited! {job.Nonce} by {miner}");
+            Console.WriteLine($"Job submited! {job.Nonce}");
             this.timer.Interval = this.interval;
             this.JobCreated.Invoke(this, this.BuildJobCreatedArgs());
             return Task.CompletedTask;
@@ -38,5 +39,11 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
 
         private JobCreatedEventArgs BuildJobCreatedArgs()
             => new JobCreatedEventArgs { Job = new JobDTO { Difficulty = this.difficulty, BlockDataHash = Guid.NewGuid().ToString("N") } };
+
+        public Task ReportHashrate(decimal hashRate)
+        {
+            Console.WriteLine($"Hash rate is -> {hashRate}");
+            return Task.CompletedTask;
+        }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Blockche.Miner.ConsoleApp.JobProducer
+namespace Blockche.Miner.Common.Models
 {
     public class JobDTO
     {
@@ -15,5 +15,9 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
         public string BlockHash { get; set; }
 
         public string BlockDataHash { get; set; }
+
+        public string User { get; set; }
+
+        public string Worker { get; set; }
     }
 }

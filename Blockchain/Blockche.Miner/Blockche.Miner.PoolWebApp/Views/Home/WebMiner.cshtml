@@ -1,0 +1,19 @@
+﻿<script src="~/lib/cryptojs/core-min.js"></script>
+<script src="~/lib/cryptojs/sha256.js"></script>
+<script src="~/js/web-miner.js"></script>
+
+<div id="startup-wrapper" class="row">
+    <div class="col-md-12">
+        <input type="text" id="user-input" placeholder="User" />
+        <input type="text" id="worker-input" placeholder="Worker" />
+        <button id="start-btn">Start mining</button>
+    </div>
+</div>
+
+<div id="mining-wrapper" class="row" hidden>
+    <div class="col-md-12">
+        <strong>USER:</strong><span id="user"></span>
+        <strong>WORKER:</strong><span id="worker"></span>
+        <strong>HASHRATE:</strong><span id="hashrate"></span>
+    </div>
+</div>

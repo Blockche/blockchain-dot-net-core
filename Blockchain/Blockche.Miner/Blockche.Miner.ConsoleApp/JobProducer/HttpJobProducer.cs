@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using Blockche.Miner.Common.Models;
 using Newtonsoft.Json;
 
 namespace Blockche.Miner.ConsoleApp.JobProducer
@@ -46,7 +47,13 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
 
         public event EventHandler<JobCreatedEventArgs> JobCreated;
 
-        public async Task SubmitJob(JobDTO job, int miner)
+        public Task ReportHashrate(decimal hashRate)
+        {
+            Console.WriteLine($"Hash rate is -> {hashRate}");
+            return Task.CompletedTask;
+        }
+
+        public async Task SubmitJob(JobDTO job)
         {
             var minedBlock = new MinedBlock
             {
