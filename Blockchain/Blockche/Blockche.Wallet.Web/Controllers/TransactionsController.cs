@@ -22,6 +22,7 @@ namespace Blockche.Wallet.Web.Controllers
         {
             var privateKey = this.HttpContext.Session.GetString("PrivateKey");
             var address = this.HttpContext.Session.GetString("Address");
+            var nodeUrl = this.HttpContext.Session.GetString("NodeUrl");
 
             if (string.IsNullOrEmpty(address) || string.IsNullOrEmpty(privateKey))
             {
@@ -39,8 +40,7 @@ namespace Blockche.Wallet.Web.Controllers
                         privateKey)
                     .Select(s => s.ToString(16));
 
-                // TODO: send all needed data;
-                var request = await httpClient.PostAsJsonAsync("http://localhost:55395/api/Node/transactions/send", new
+                var request = await httpClient.PostAsJsonAsync($"{nodeUrl}/api/Node/transactions/send", new
                 {
                     From = address,
                     To = model.RecipientAddress,

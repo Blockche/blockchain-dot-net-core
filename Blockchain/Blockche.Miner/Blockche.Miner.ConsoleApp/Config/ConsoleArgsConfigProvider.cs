@@ -58,7 +58,7 @@ namespace Blockche.Miner.ConsoleApp.Config
 
         public IEnumerable<string> JobProducerUrls { get; } = new List<string>() { "http://localhost:50307" };
 
-        public string Address { get; set; } = "0x0000000000000000000000000000000000000000";
+        public string Address { get; set; } = "0000000000000000000000000000000000000000";
 
         public bool UsePool { get; } = true;
 
