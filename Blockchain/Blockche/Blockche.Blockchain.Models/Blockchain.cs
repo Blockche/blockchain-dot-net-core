@@ -437,16 +437,15 @@ namespace Blockche.Blockchain.Models
             var diffsInSeconds = new List<int>();
             for (int i = 0; i < lastDates.Count - 1; i++)
             {
-                diffsInSeconds.Add((lastDates[i] - lastDates[i + 1]).Seconds);
+                diffsInSeconds.Add(Math.Abs((lastDates[i] - lastDates[i + 1]).Seconds));
             }
 
             const int TargetSecondsBetweenBlocks = 30;
-            const int AllowedOffsetPercentage = 20;
-            const int MinTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 - (AllowedOffsetPercentage / 100));
-            const int MaxTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 + (AllowedOffsetPercentage / 100));
+            const double AllowedOffsetPercentage = 20;
+            const double MinTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 - (AllowedOffsetPercentage / 100));
+            const double MaxTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 + (AllowedOffsetPercentage / 100));
 
-            var avgDiffs = diffsInSeconds.Average();
-            var currentDiff = avgDiffs / TargetSecondsBetweenBlocks;
+            var currentDiff = diffsInSeconds.Average();
             if (MinTargetSecondsBetweenBlocks <= currentDiff && currentDiff <= MaxTargetSecondsBetweenBlocks)
             {
                 // No need for adjusting

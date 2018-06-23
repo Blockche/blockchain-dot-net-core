@@ -46,7 +46,7 @@
             }, 5000);
 
             submitJob = function (job) {
-                console.log('submit job!');
+                console.log('submit job -> ' + job.blockHash);
 
                 job.user = user;
                 job.worker = worker;
@@ -71,25 +71,6 @@
         setTimeout(mine, 0);
     }
 
-    function pad(num) {
-        var norm = Math.floor(Math.abs(num));
-        return (norm < 10 ? '0' : '') + norm;
-    }
-
-    function getIsoDate(date) {
-        var tzo = -date.getTimezoneOffset(),
-            dif = tzo >= 0 ? '+' : '-';
-
-        return date.getFullYear() +
-            '-' + pad(date.getMonth() + 1) +
-            '-' + pad(date.getDate()) +
-            'T' + pad(date.getHours()) +
-            ':' + pad(date.getMinutes()) +
-            ':' + pad(date.getSeconds()) +
-            dif + pad(tzo / 60) +
-            ':' + pad(tzo % 60);
-    }
-
     function updateHashRate() {
         var startedAt = tempStartClock;
         var operations = tempOperations;
@@ -107,9 +88,9 @@
     }
 
     function newJobHandler(newJob) {
-        console.log('new job!');
+        console.log('new job -> diff: ' + newJob.difficulty);
         job = newJob;
-        job.dateCreated = getIsoDate(new Date());
+        job.dateCreated = new Date().toISOString();
 
         updateHashRate();
 
@@ -121,7 +102,7 @@
     }
 
     function isValidJob(job) {
-        for (var i = 0; i < job.difficulty - 2; i++) {
+        for (var i = 0; i < job.difficulty; i++) {
             if (job.blockHash[i] !== '0') {
                 return false;
             }

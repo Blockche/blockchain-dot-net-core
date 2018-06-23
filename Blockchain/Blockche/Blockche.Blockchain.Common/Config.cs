@@ -8,7 +8,7 @@ namespace Blockche.Blockchain.Common
 {
     public class Config
     {
-        public const int StartDifficulty = 5;
+        public const int StartDifficulty = 3;
         public const int MinTransactionFee = 10;
         public const int MaxTransactionFee = 1000000;
         public const int BlockReward = 5000000;
