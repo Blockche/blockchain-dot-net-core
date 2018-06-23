@@ -8,6 +8,7 @@
     var tempOperations = 0;
     var tempStartClock = 0;
     var submitedBlocks = 0;
+    var lastJobs = [];
 
     var submitJob = function (job) {
         console.warn('Not initialized yet!');
@@ -55,7 +56,24 @@
                 job.worker = worker;
 
                 submitedBlocks++;
+                lastJobs.unshift(job);
+                if (lastJobs.length > 10) {
+                    lastJobs.pop();
+                }
+
                 $('#submitedblocks').text(submitedBlocks);
+                var jobs = '';
+                index = 1;
+                lastJobs.forEach(function (job) {
+                    jobs += '<tr>';
+                    jobs += '<td>' + (index++) + '</td>';
+                    jobs += '<td>' + (job.user) + '</td>';
+                    jobs += '<td>' + (job.worker) + '</td>';
+                    jobs += '<td>' + (job.blockHash) + '</td>';
+                    jobs += '</tr>';
+                });
+                $('#last-blocks-grid').html(jobs);
+
 
                 updateHashRate();
 
