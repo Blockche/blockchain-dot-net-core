@@ -440,24 +440,19 @@ namespace Blockche.Blockchain.Models
                 diffsInSeconds.Add(Math.Abs((lastDates[i] - lastDates[i + 1]).Seconds));
             }
 
-            const int TargetSecondsBetweenBlocks = 30;
-            const double AllowedOffsetPercentage = 20;
-            const double MinTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 - (AllowedOffsetPercentage / 100));
-            const double MaxTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 + (AllowedOffsetPercentage / 100));
-
             var currentDiff = diffsInSeconds.Average();
-            if (MinTargetSecondsBetweenBlocks <= currentDiff && currentDiff <= MaxTargetSecondsBetweenBlocks)
+            if (Config.MinTargetSecondsBetweenBlocks <= currentDiff && currentDiff <= Config.MaxTargetSecondsBetweenBlocks)
             {
                 // No need for adjusting
                 return;
             }
 
-            if (currentDiff < MinTargetSecondsBetweenBlocks)
+            if (currentDiff < Config.MinTargetSecondsBetweenBlocks)
             {
                 // Increaze diff
                 this.CurrentDifficulty++;
             }
-            else if (MaxTargetSecondsBetweenBlocks < currentDiff)
+            else if (Config.MaxTargetSecondsBetweenBlocks < currentDiff)
             {
                 this.CurrentDifficulty--;
             }

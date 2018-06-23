@@ -44,6 +44,14 @@ namespace Blockche.Miner.ConsoleApp.Config
                     this.IsTest = true;
                 }
             }
+
+            Console.WriteLine($"ThreadsCount: {this.ThreadsCount}");
+            Console.WriteLine($"JobProducerUrls: {string.Join(", ", this.JobProducerUrls)}");
+            Console.WriteLine($"Address: {this.Address}");
+            Console.WriteLine($"UsePool: {this.UsePool}");
+            Console.WriteLine($"User: {this.User}");
+            Console.WriteLine($"Worker: {this.Worker}");
+            Console.WriteLine($"IsTest: {this.IsTest}");
         }
 
         public int ThreadsCount { get; } = 1;

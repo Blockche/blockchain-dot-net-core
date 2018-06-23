@@ -15,9 +15,13 @@ namespace Blockche.Blockchain.Common
         public const long MaxTransferValue = 10000000000000;
         public const int SafeConfirmCount = 3;
 
+        public const int TargetSecondsBetweenBlocks = 30;
+        public const double AllowedOffsetPercentage = 20;
+        public const double MinTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 - (AllowedOffsetPercentage / 100));
+        public const double MaxTargetSecondsBetweenBlocks = TargetSecondsBetweenBlocks * (1 + (AllowedOffsetPercentage / 100));
+
         public const string NullAddress = "0000000000000000000000000000000000000000";
-        public const string NullPubKey = "00000000000000000000000000000000000000000000000000000000000000000";
-                                          
+        public const string NullPubKey = "00000000000000000000000000000000000000000000000000000000000000000";                                          
 
         public const string NullSignaturePublicKey = "0000000000000000000000000000000000000000000000000000000000000000";
         public const string NullSignaturePrivateKey = NullSignaturePublicKey;
