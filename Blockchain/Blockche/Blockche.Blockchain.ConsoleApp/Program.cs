@@ -1,19 +1,12 @@
 ﻿using Blockche.Blockchain.Common;
-using Blockche.Blockchain.Models;
-using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Math.EC;
-using System;
 
 namespace Blockche.Blockchain.ConsoleApp
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             CryptoUtils.SignAndVerifyTransaction(recipientAddress: "f51362b7351ef62253a227a77751ad9b2302f911",
                  value: 25000,
@@ -21,18 +14,18 @@ namespace Blockche.Blockchain.ConsoleApp
                  iso8601datetime: "2018-02-10T17:53:48.972Z",
                  senderPrivKeyHex: "7e4670ae70c98d24f3662c172dc510a085578b9ccc717e6c2f4e547edd960a34");
 
-            string[] SampleUrls =
-                    new string[] {
+            var SampleUrls =
+                    new[] {
                         "http://localhost:5001",
                         "http://localhost:5002",
                         "http://localhost:5003",
                         "http://localhost:5004"
                     };
 
-            string explorerUrl = "http://localhost:7343";
+            var explorerUrl = "http://localhost:7343";
 
             NodeInstanceRunner.StartMultipleInstances(SampleUrls);
-          //  NodeInstanceRunner.ConnectBetweenInstances(SampleUrls, explorerUrl);
+            //  NodeInstanceRunner.ConnectBetweenInstances(SampleUrls, explorerUrl);
 
             //var test = DecompressPublicKey(Faucet.FaucetPublicKey);
 
@@ -42,11 +35,11 @@ namespace Blockche.Blockchain.ConsoleApp
         {
             var pubKeyX = pubKeyCompressed.Substring(0, 64);
             var pubKeyYOdd = pubKeyCompressed.Substring(64);
-            X9ECParameters curve = SecNamedCurves.GetByName("secp256k1");
-            ECDomainParameters Domain = new ECDomainParameters(curve.Curve, curve.G, curve.N, curve.H);
+            var curve = SecNamedCurves.GetByName("secp256k1");
+            var Domain = new ECDomainParameters(curve.Curve, curve.G, curve.N, curve.H);
 
             //doesn't work
-             var p = curve.Curve.DecodePoint(CryptoUtils.GetBytes(pubKeyCompressed));
+            var p = curve.Curve.DecodePoint(CryptoUtils.GetBytes(pubKeyCompressed));
 
             //var bi = new BigInteger(pubKeyCompressed, 16);
             // ECFieldElement p = curve.Curve.FromBigInteger(bi);
@@ -56,10 +49,10 @@ namespace Blockche.Blockchain.ConsoleApp
             //var a = Asn1OctetString.FromByteArray(CryptoUtils.HexToBytes(pubKeyX));
             //var b = a.ToAsn1Object();
 
-            
-            
 
-             var pubKeyPoint = new ECPublicKeyParameters(p, Domain);
+
+
+            var pubKeyPoint = new ECPublicKeyParameters(p, Domain);
             return pubKeyPoint;
         }
     }
