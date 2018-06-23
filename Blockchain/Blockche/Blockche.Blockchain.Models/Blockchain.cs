@@ -18,11 +18,13 @@ namespace Blockche.Blockchain.Models
             MiningJobs = new Dictionary<string, Block>();
         }
 
+        public static readonly Dictionary<string, string> MinerAddressBlockIndexDateTimeMap =
+            new Dictionary<string, string>();
+
         public List<Block> Blocks { get; set; }// Block[]
         public List<Transaction> PendingTransactions { get; set; } // Transaction[]
         public int CurrentDifficulty { get; set; } // integer
         public Dictionary<string, Block> MiningJobs { get; set; } // map(blockDataHash => Block)
-
 
         public int CalcCumulativeDifficulty()
         {
@@ -255,13 +257,24 @@ namespace Blockche.Blockchain.Models
             var clonedTransactions = (SerializeUtils.CloneList<Transaction>(this.PendingTransactions))
             .OrderByDescending(s => s.Fee).ToList(); // sort descending by fee
 
+            var dateCreated = GeneralUtils.NowInISO8601();
+            var key = nextBlockIndex + "_" + minerAddress;
+            if (MinerAddressBlockIndexDateTimeMap.ContainsKey(key))
+            {
+                dateCreated = MinerAddressBlockIndexDateTimeMap[key];
+            }
+            else
+            {
+                MinerAddressBlockIndexDateTimeMap[key] = dateCreated;
+            }
+
             // Prepare the coinbase transaction -> it will collect all tx fees
             var coinbaseTransaction = new Transaction(
                 Config.NullAddress,       // from (address)
                 minerAddress,             // to (address)
                 Config.BlockReward,       // value (of transfer)
                 0,                        // fee (for mining)
-                GeneralUtils.NowInISO8601(), // dateCreated
+                dateCreated, // dateCreated
                 "coinbase tx",            // data (payload / comments)
                 Config.NullPubKey,        // senderPubKey
                 null,                // transactionDataHash

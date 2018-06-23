@@ -20,20 +20,17 @@ namespace Blockche.Miner.PoolWebApp.Controllers
             return this.View();
         }
 
-        public async Task<IActionResult> WebMiner([FromServices]JobProducer jobProducer, [FromServices]IHubContext<PoolHub> hub)
+        public IActionResult Blocks()
         {
-            await hub.Clients.All.SendAsync("ReceiveMessage", Guid.NewGuid());
-            return View();
+            return this.View();
         }
 
-        public IActionResult Contact()
+        public IActionResult Users()
         {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return this.View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult WebMiner()
         {
             return View();
         }

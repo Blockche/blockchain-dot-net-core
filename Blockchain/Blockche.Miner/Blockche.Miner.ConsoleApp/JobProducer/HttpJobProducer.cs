@@ -16,7 +16,7 @@ namespace Blockche.Miner.ConsoleApp.JobProducer
         private readonly string minerAddress;
         private readonly IEnumerable<string> nodeUrls;
         private readonly Timer timer;
-        private const int TimerInterval = 1000 * 5;
+        private const int TimerInterval = 3000;
 
         private string lastJob;
 

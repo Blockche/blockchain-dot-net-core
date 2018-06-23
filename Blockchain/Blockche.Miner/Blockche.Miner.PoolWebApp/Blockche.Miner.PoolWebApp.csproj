@@ -12,4 +12,10 @@
     <ProjectReference Include="..\Blockche.Miner.Common\Blockche.Miner.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Home\Users.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>
