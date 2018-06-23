@@ -151,7 +151,7 @@ namespace Blockche.Blockchain.Common
             const int dkLength = 256;
 
             var decriptionKey = GenerateSCryptKey(
-                password.HexToByteArray(),
+                GetBytes(password),
                 salt,
                 cost,
                 blockSize,
@@ -197,7 +197,7 @@ namespace Blockche.Blockchain.Common
             }
 
             byte[] decriptionKey = GenerateSCryptKey(
-                password.HexToByteArray(),
+                GetBytes(password),
                 keystore.KdfParameters.Salt.HexToByteArray(),
                 keystore.KdfParameters.N,
                 keystore.KdfParameters.R,
